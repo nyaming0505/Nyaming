@@ -1,0 +1,63 @@
+﻿using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float speed = 5f;              // 이동 속도
+    public float inputThreshold = 0.1f;   // 입력 감지 최소값
+
+    private Rigidbody2D rb;
+    private Animator anim;
+    private SpriteRenderer sr;
+
+    private Vector2 input;       // 현재 입력값
+    private Vector2 lastMove;    // 마지막으로 이동한 방향 (Idle 용)
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
+    }
+
+    void Update()
+    {
+        // 🔹 1) 입력 받기
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+
+        // 🔹 2) 대각선 이동 금지
+        if (x != 0f) y = 0f;
+        else if (y != 0f) x = 0f;
+
+        input = new Vector2(x, y);
+
+        // 🔹 3) 걷고 있는지 판단 (threshold 사용)
+        bool isWalking = input.sqrMagnitude > (inputThreshold * inputThreshold);
+        anim.SetBool("isWalking", isWalking);
+
+        // 🔹 4) 실시간 이동값 전달 (Walk Sub State Machine에서 사용)
+        anim.SetFloat("moveX", input.x);
+        anim.SetFloat("moveY", input.y);
+
+        // 🔹 5) 마지막 이동 방향 기록 (Idle 방향 결정)
+        if (isWalking)
+        {
+            lastMove = input.normalized;
+            anim.SetFloat("lastMoveX", lastMove.x);
+            anim.SetFloat("lastMoveY", lastMove.y);
+        }
+
+        // 🔹 6) 좌우 반전 처리 (스프라이트 방향)
+        if (input.x != 0)
+            sr.flipX = input.x < 0;
+        else
+            sr.flipX = lastMove.x < 0;
+    }
+
+    void FixedUpdate()
+    {
+        // 🔹 실제 이동 처리
+        rb.velocity = input * speed;
+    }
+}
