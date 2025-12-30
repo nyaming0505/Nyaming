@@ -14,7 +14,7 @@ public class MiniGameResultPanel : MonoBehaviour
     public Sprite waterSprite;
     public Sprite chocoSprite;
 
-    IngredientType currentResult;
+    MiniGameIngredient currentResult;
     bool canClose = false;
     void OnEnable()
     {
@@ -43,23 +43,23 @@ public class MiniGameResultPanel : MonoBehaviour
         canClose = true;
     }
 
-    public void ShowResult(IngredientType result)
+    public void ShowResult(MiniGameIngredient result)
     {
         currentResult = result;
 
         switch (result)
         {
-            case IngredientType.Milk:
+            case MiniGameIngredient.Milk:
                 resultImage.sprite = milkSprite;
                 resultText.text = "¿ìÀ¯ È¹µæ¡Ú";
                 break;
 
-            case IngredientType.Water:
+            case MiniGameIngredient.Water:
                 resultImage.sprite = waterSprite;
                 resultText.text = "¹° È¹µæ¡Ú";
                 break;
 
-            case IngredientType.Choco:
+            case MiniGameIngredient.Choco:
                 resultImage.sprite = chocoSprite;
                 resultText.text = "ÃÊÄÚ È¹µæ¡Ú";
                 break;

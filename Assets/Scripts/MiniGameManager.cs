@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum IngredientType
+public enum MiniGameIngredient
 {
-    Milk,
     Water,
+    Milk,
     Choco
 }
 
@@ -20,15 +20,15 @@ public class MiniGameManager : MonoBehaviour
     [Header("Arrow Settings")]
     public Transform arrow;
     public float rotateSpeed = 120f;
-    public float limitAngle = 60f; // 각도 제한을 변수로 분리 (수정하기 편하도록)
+    public float limitAngle = 60f;
 
     float currentAngle = 0f;
-    int direction = 1; // 1 = 시계, -1 = 반시계
+    int direction = 1;
     bool isPlaying = false;
 
     public MiniGameResultPanel resultPanel;
 
-    private void Start()
+    void Start()
     {
         gameObject.SetActive(false);
     }
@@ -37,11 +37,7 @@ public class MiniGameManager : MonoBehaviour
     {
         isPlaying = true;
 
-        // [수정됨] 시작 각도를 제한 범위 내에서 랜덤으로 설정 (-60 ~ 60)
         currentAngle = Random.Range(-limitAngle, limitAngle);
-
-        // [수정됨] 시작 방향도 랜덤으로 설정 (50% 확률)
-        // Random.value는 0.0 ~ 1.0 사이의 랜덤 float 반환
         direction = (Random.value > 0.5f) ? 1 : -1;
 
         SetArrowRotation();
@@ -61,11 +57,13 @@ public class MiniGameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            IngredientType result = GetIngredientByAngle();
+            MiniGameIngredient result = GetIngredientByAngle();
             Debug.Log("획득 재료: " + result);
 
+            CupIngredient cupIngredient = ConvertToCupIngredient(result);
+            CupManager.Instance.AddIngredient(cupIngredient);
+
             resultPanel.ShowResult(result);
-            // CupManager.Instance.AddIngredient(result);
 
             gameObject.SetActive(false);
         }
@@ -75,7 +73,6 @@ public class MiniGameManager : MonoBehaviour
     {
         currentAngle += rotateSpeed * direction * Time.deltaTime;
 
-        // [수정됨] 하드코딩된 60f 대신 변수 limitAngle 사용
         if (currentAngle >= limitAngle)
         {
             currentAngle = limitAngle;
@@ -95,16 +92,28 @@ public class MiniGameManager : MonoBehaviour
         arrow.localRotation = Quaternion.Euler(0, 0, currentAngle);
     }
 
-    IngredientType GetIngredientByAngle()
+    MiniGameIngredient GetIngredientByAngle()
     {
-        // [참고] 여기의 범위 조건들도 limitAngle 비율에 맞게 조정할 수도 있지만,
-        // 일단 기존 로직(60, 20 기준)을 그대로 두었습니다.
-
         if (currentAngle <= 60f && currentAngle > 20f)
-            return IngredientType.Milk;
+            return MiniGameIngredient.Milk;
         else if (currentAngle <= 20f && currentAngle > -20f)
-            return IngredientType.Water;
+            return MiniGameIngredient.Water;
         else
-            return IngredientType.Choco;
+            return MiniGameIngredient.Choco;
+    }
+
+    CupIngredient ConvertToCupIngredient(MiniGameIngredient mini)
+    {
+        switch (mini)
+        {
+            case MiniGameIngredient.Milk:
+                return CupIngredient.Milk;
+            case MiniGameIngredient.Water:
+                return CupIngredient.Water;
+            case MiniGameIngredient.Choco:
+                return CupIngredient.Choco;
+            default:
+                return CupIngredient.Water;
+        }
     }
 }

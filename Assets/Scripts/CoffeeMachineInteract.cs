@@ -55,8 +55,9 @@ public class CoffeeMachineInteract : MonoBehaviour
         Debug.Log("에스프레소 완성!");
         progress = 0f;
         progressBar.fillAmount = 0f;
+        
+        CupManager.Instance.AddIngredient(CupIngredient.Espresso);
 
-        // 👉 여기서 에스프레소 아이템 생성
     }
 
     void OnTriggerEnter2D(Collider2D other)
