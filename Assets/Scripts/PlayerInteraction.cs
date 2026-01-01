@@ -9,5 +9,10 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         isInteracting = Input.GetKey(KeyCode.E);
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RecipeDatabase.Instance.DebugRandomRecipe();
+        }
     }
 }
