@@ -101,7 +101,7 @@ public class OrderManager : MonoBehaviour
         {
             Debug.Log("[ORDER] 성공");
             order.customer.OnDrinkServed();
-            GameManager.Instance.AddScore(100);
+            ScoreManager.Instance.AddScore(100);
         }
         else
         {

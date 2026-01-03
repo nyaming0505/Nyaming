@@ -5,26 +5,25 @@ using UnityEngine.UI; // UI를 다루기 위해 필수!
 
 public class HeartManager : MonoBehaviour
 {
-    // 어디서든 이 매니저를 부를 수 있게 싱글톤 처리 (나중에 손님 스크립트에서 쓰기 편함)
     public static HeartManager instance;
 
     [Header("설정")]
-    public int maxHearts = 5;       // 최대 하트 개수
-    public int currentHearts;       // 현재 하트 개수
+    public int maxHearts = 5;
+    public int currentHearts;
 
     [Header("UI 연결")]
-    public Image[] heartImages;     // 하트 이미지 5개가 들어갈 배열
-    public Sprite fullHeartSprite;  // 꽉 찬 하트 그림
-    public Sprite emptyHeartSprite; // 빈 하트 그림
+    public Image[] heartImages;
+    public Sprite fullHeartSprite;
+    public Sprite emptyHeartSprite;
 
     private void Awake()
     {
         if (instance == null) instance = this;
     }
 
+    // 게임 시작 시 하트 꽉 채우기
     void Start()
     {
-        // 게임 시작 시 하트 꽉 채우기
         currentHearts = maxHearts;
         UpdateHeartUI();
     }
@@ -44,10 +43,9 @@ public class HeartManager : MonoBehaviour
     {
         if (currentHearts > 0)
         {
-            currentHearts--; // 하트 1개 감소
-            UpdateHeartUI(); // UI 갱신
+            currentHearts--;
+            UpdateHeartUI();
 
-            // 하트가 0이 되었는지 확인
             if (currentHearts <= 0)
             {
                 GameOver();
@@ -78,16 +76,13 @@ public class HeartManager : MonoBehaviour
     {
         Debug.Log("💀 하트 0개! 게임 오버!");
 
-        // 씬에 있는 GameOverManager를 찾아서 실행함
-        GameOverManager gm = FindObjectOfType<GameOverManager>();
-
-        if (gm != null)
+        if (GameOverManager.Instance != null)
         {
-            gm.TriggerGameOver(); // 게임오버 패널 띄우기
+            GameOverManager.Instance.TriggerGameOver();
         }
         else
         {
-            Debug.LogError("씬에 GameOverManager가 없습니다!");
+            Debug.LogError("GameOverManager 인스턴스를 찾을 수 없습니다!");
         }
     }
 }

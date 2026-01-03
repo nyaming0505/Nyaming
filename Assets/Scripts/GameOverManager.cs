@@ -4,10 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class GameOverManager : MonoBehaviour
 {
+    public static GameOverManager Instance;
     [Header("UI Components")]
     public GameObject gameOverPanel;
-    public GameObject gameTitleObject;
-    public TitleManager titleManager;
     public Text yesText;
     public Text noText;
 
@@ -16,6 +15,9 @@ public class GameOverManager : MonoBehaviour
     // 
     void Awake()
     {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
         Time.timeScale = 1f; 
         gameOverPanel.SetActive(false); 
         isYesSelected = true; 
@@ -38,6 +40,7 @@ public class GameOverManager : MonoBehaviour
         }
     }
 
+    // 외부에서 게임오버 시킬 때 이 함수만 부르면 됨
     public void TriggerGameOver()
     {
         gameOverPanel.SetActive(true);
@@ -75,11 +78,15 @@ public class GameOverManager : MonoBehaviour
         }
         else
         {
-            gameOverPanel.SetActive(false);
+            if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
-            if (gameTitleObject != null)
+            if (TitleManager.Instance != null)
             {
-                titleManager.ShowTitleScreen();
+                TitleManager.Instance.ShowTitleScreen();
+            }
+            else
+            {
+                Debug.LogError("TitleManager 인스턴스를 찾을 수 없습니다.");
             }
         }
     }
