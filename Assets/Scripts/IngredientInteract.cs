@@ -9,7 +9,6 @@ public class IngredientInteract : MonoBehaviour
     public GameObject miniGameUI;
 
     bool playerInRange = false;
-    bool isInteracted = false;
     bool inputLocked = false;   // ? 입력 잠금
 
     PlayerInteraction player;
@@ -71,7 +70,6 @@ public class IngredientInteract : MonoBehaviour
             playerInRange = false;
             player = null;
 
-            isInteracted = false;
             inputLocked = false;
 
             miniGameUI.SetActive(false);

@@ -1,11 +1,11 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class RecipeChecker
 {
 
-    //∑πΩ√«« √º≈©
+    //Î†àÏãúÌîº Ï≤¥ÌÅ¨
     public static bool Check(List<CupIngredient> cup, Recipe recipe)
     {
         if (cup.Count != recipe.ingredients.Count)
@@ -28,39 +28,37 @@ public static class RecipeChecker
 
 public enum CustomerState
 {
-    Enter,          // ¿‘¿Â
-    MoveToOrder,    // ¡÷πÆ¥Î∑Œ ¿Ãµø
-    Order,          // ¡÷πÆ ¡¶Ω√
-    MoveToSeat,     // ¿⁄∏Æ∑Œ ¿Ãµø
-    Waiting,        // ±‚¥Ÿ∏≤ (≈∏¿Ã∏”)
-    Success,        // ∏ﬁ¥∫ πﬁ¿Ω
-    Fail,           // ∏¯ πﬁ¿Ω
-    Leave           // ≈¿Â
+    Enter,
+    MoveToQueue,
+    WaitingInQueue,
+    Ordering,
+    MoveToSeat,
+    WaitingForDrink,
+    LeaveSuccess,
+    LeaveFail
 }
-
 
 public class Customer : MonoBehaviour
 {
-    [Header("State")]
-    public CustomerState currentState;
-
-    [Header("Order")]
-    public List<CupIngredient> orderRecipe;
-
-    [Header("Wait")]
-    public float maxWaitTime = 20f;
-    private float waitTimer;
-
     [Header("Movement")]
-    public Transform orderPoint;
-    public Transform seatPoint;
-    public Transform exitPoint;
     public float moveSpeed = 2f;
 
     [Header("References")]
-    public Animator anim;
+    public Animator animator;
 
-    private bool isServed = false;
+    public CustomerState currentState;
+
+    Vector2 targetPosition;
+    bool isMoving = false;
+
+    Chair assignedChair;
+
+    public bool HasOrdered { get; private set; }
+
+
+    // =========================
+    // Unity Life Cycle
+    // =========================
 
     void Start()
     {
@@ -69,143 +67,244 @@ public class Customer : MonoBehaviour
 
     void Update()
     {
+        Move();
         UpdateState();
     }
-    void UpdateState()
-    {
-        switch (currentState)
-        {
-            case CustomerState.Enter:
-                MoveTo(orderPoint, CustomerState.Order);
-                break;
 
-            case CustomerState.MoveToSeat:
-                MoveTo(seatPoint, CustomerState.Waiting);
-                break;
+    // =========================
+    // ÏÉÅÌÉú Î≥ÄÍ≤Ω
+    // =========================
 
-            case CustomerState.Waiting:
-                UpdateWaiting();
-                break;
-
-            case CustomerState.Leave:
-                MoveTo(exitPoint, null);
-                break;
-        }
-    }
-    void MoveTo(Transform target, CustomerState? nextState)
-    {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target.position,
-            moveSpeed * Time.deltaTime
-        );
-
-        if (Vector3.Distance(transform.position, target.position) < 0.05f)
-        {
-            if (nextState.HasValue)
-                ChangeState(nextState.Value);
-        }
-    }
-
-    void UpdateWaiting()
-    {
-        if (isServed) return;
-
-        waitTimer -= Time.deltaTime;
-
-        if (waitTimer <= 0f)
-        {
-            FailOrder();
-        }
-    }
-    public void TryServe()
-    {
-        if (currentState != CustomerState.Waiting) return;
-
-        if (IsOrderCorrect())
-        {
-            SuccessOrder();
-        }
-        else
-        {
-            FailOrder();
-        }
-    }
-
-    bool IsOrderCorrect()
-    {
-        List<CupIngredient> cup = CupManager.Instance.GetIngredients();
-
-        if (cup.Count != orderRecipe.Count) return false;
-
-        List<CupIngredient> tempCup = new List<CupIngredient>(cup);
-
-        foreach (var ing in orderRecipe)
-        {
-            if (!tempCup.Remove(ing))
-                return false;
-        }
-
-        return true;
-    }
-    void SuccessOrder()
-    {
-        isServed = true;
-
-        GameManager.Instance.AddScore(100);
-        CupManager.Instance.ClearCup();
-
-        ChangeState(CustomerState.Success);
-        Invoke(nameof(LeaveCustomer), 1.5f);
-    }
-
-    void FailOrder()
-    {
-        isServed = true;
-
-      //  GameManager.Instance.DecreaseHeart(); // 
-        CupManager.Instance.ClearCup();
-
-        ChangeState(CustomerState.Fail);
-        Invoke(nameof(LeaveCustomer), 1.5f);
-    }
-
-    void LeaveCustomer()
-    {
-        ChangeState(CustomerState.Leave);
-    }
     void ChangeState(CustomerState newState)
     {
         currentState = newState;
 
-        switch (newState)
+        switch (currentState)
         {
             case CustomerState.Enter:
-                anim.Play("Walk");
+                MoveTo(PathManager.Instance.GetEnterPoint());
                 break;
 
-            case CustomerState.Order:
-                anim.Play("Idle");
-           //     ShowOrderUI();
+            case CustomerState.MoveToQueue:
+                bool success = QueueManager.Instance.TryEnterQueue(this);
+                if (!success)
+                {
+                    ChangeState(CustomerState.LeaveFail);
+                    return;
+                }
                 break;
 
-            case CustomerState.Waiting:
-                waitTimer = maxWaitTime;
-                anim.Play("Sit");
+
+            case CustomerState.WaitingInQueue:
+                StopMoving();
                 break;
 
-            case CustomerState.Success:
-                anim.Play("Happy");
+            case CustomerState.Ordering:
+                StopMoving();
+                // Ï£ºÎ¨∏ ÏÉùÏÑ±ÏùÄ Ïô∏Î∂Ä(OrderManager)ÏóêÏÑú Ï≤òÎ¶¨
                 break;
 
-            case CustomerState.Fail:
-                anim.Play("Angry");
+            case CustomerState.MoveToSeat:
+
+                if (assignedChair == null)
+                {
+                    ChangeState(CustomerState.LeaveFail);
+                    return;
+                }
+                MoveTo(assignedChair.sitPoint.position);
                 break;
 
-            case CustomerState.Leave:
-                anim.Play("Walk");
+            case CustomerState.WaitingForDrink:
+                StopMoving();
+                break;
+
+            case CustomerState.LeaveSuccess:
+            case CustomerState.LeaveFail:
+
+                if (assignedChair != null)
+                {
+                    assignedChair.Release();
+                    assignedChair = null;
+                }
+                MoveTo(PathManager.Instance.GetExitPoint());
+                break;
+
+
+        }
+    }
+
+    // =========================
+    // ÏÉÅÌÉú ÏóÖÎç∞Ïù¥Ìä∏
+    // =========================
+
+    void UpdateState()
+    {
+        if (isMoving) return;
+
+        switch (currentState)
+        {
+            case CustomerState.Enter:
+                ChangeState(CustomerState.MoveToQueue);
+                break;
+
+            case CustomerState.MoveToQueue:
+                ChangeState(CustomerState.WaitingInQueue);
+                break;
+
+            case CustomerState.MoveToSeat:
+                if (!isMoving && assignedChair != null)
+                {
+                    SitOnChair(assignedChair);
+                    ChangeState(CustomerState.WaitingForDrink);
+                }
+                break;
+            case CustomerState.LeaveSuccess:
+            case CustomerState.LeaveFail:
+                Destroy(gameObject);
                 break;
         }
     }
 
+    // =========================
+    // Ïù¥Îèô Î°úÏßÅ (4Î∞©Ìñ•)
+    // =========================
+
+    void Move()
+    {
+
+        if (!isMoving)
+        {
+            animator.SetBool("IsMoving", false);
+            return;
+        }
+
+        Vector2 current = transform.position;
+        Vector2 next = current;
+
+        Vector2 delta = targetPosition - current;
+
+        // ‚≠ê XÏ∂ï Î®ºÏ†Ä Ïù¥Îèô
+        if (Mathf.Abs(delta.x) > 0.01f)
+        {
+            next.x = Mathf.MoveTowards(
+                current.x,
+                targetPosition.x,
+                moveSpeed * Time.deltaTime
+            );
+
+            UpdateAnimation(new Vector2(delta.x, 0));
+        }
+        // ‚≠ê XÍ∞Ä ÎßûÏúºÎ©¥ YÏ∂ï Ïù¥Îèô
+        else if (Mathf.Abs(delta.y) > 0.01f)
+        {
+            next.y = Mathf.MoveTowards(
+                current.y,
+                targetPosition.y,
+                moveSpeed * Time.deltaTime
+            );
+
+            UpdateAnimation(new Vector2(0, delta.y));
+        }
+        else
+        {
+            // ÎèÑÏ∞©
+            transform.position = targetPosition;
+            isMoving = false;
+            animator.SetBool("IsMoving", false);
+            return;
+        }
+
+        transform.position = next;
+    }
+
+
+    public void MoveTo(Vector2 pos)
+    {
+        targetPosition = pos;
+        isMoving = true;
+    }
+
+    void StopMoving()
+    {
+        isMoving = false;
+        animator.SetBool("IsMoving", false);
+    }
+
+    // =========================
+    // Ïï†ÎãàÎ©îÏù¥ÏÖò (ÏÉÅ / Ìïò / Ï¢å / Ïö∞)
+    // =========================
+
+    void UpdateAnimation(Vector2 dir)
+    {
+        animator.SetBool("IsMoving", true);
+
+        float moveX = 0;
+        float moveY = 0;
+
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            moveX = Mathf.Sign(dir.x);
+            moveY = 0;
+        }
+        else
+        {
+            moveX = 0;
+            moveY = Mathf.Sign(dir.y);
+        }
+
+        animator.SetFloat("MoveX", moveX);
+        animator.SetFloat("MoveY", moveY);
+
+        // ‚≠ê ÎßàÏßÄÎßâ Î∞©Ìñ• Ï†ÄÏû•
+        animator.SetFloat("lastMoveX", moveX);
+        animator.SetFloat("lastMoveY", moveY);
+    }
+
+    // =========================
+    // Ïô∏Î∂Ä Ïù¥Î≤§Ìä∏ Ìò∏Ï∂ú
+    // =========================
+
+    public void OnOrderCalled()
+    {
+        ChangeState(CustomerState.Ordering);
+    }
+
+    public void OnOrderTaken(Chair chair)
+    {
+        QueueManager.Instance.LeaveQueue(this); // ‚≠ê ÌïµÏã¨
+        assignedChair = chair;
+        ChangeState(CustomerState.MoveToSeat);
+    }
+
+    public void OnDrinkServed()
+    {
+        ChangeState(CustomerState.LeaveSuccess);
+    }
+
+    public void OnTimeOver()
+    {
+        ChangeState(CustomerState.LeaveFail);
+    }
+
+    public void MarkOrdered()
+    {
+        HasOrdered = true;
+    }
+
+    public void SitOnChair(Chair chair)
+    {
+        animator.SetBool("IsMoving", false);
+        animator.SetBool("IsSitting", true);
+
+        if (chair.sitDirection == SitDirection.Left)
+        {
+            animator.SetFloat("lastMoveX", -1);
+            animator.SetFloat("lastMoveY", 0);
+        }
+        else
+        {
+            animator.SetFloat("lastMoveX", 1);
+            animator.SetFloat("lastMoveY", 0);
+        }
+    }
 }
