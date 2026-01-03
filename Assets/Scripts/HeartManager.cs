@@ -76,8 +76,18 @@ public class HeartManager : MonoBehaviour
     // 게임오버 처리
     void GameOver()
     {
-        Debug.Log("💀 게임 오버! (Game Over UI를 띄우세요)");
-        // 여기에 나중에 작성할 UIManager.ShowGameOver(); 같은 걸 넣으면 됨
-        // Time.timeScale = 0; // 게임 일시정지 (필요하면 주석 해제)
+        Debug.Log("💀 하트 0개! 게임 오버!");
+
+        // 씬에 있는 GameOverManager를 찾아서 실행함
+        GameOverManager gm = FindObjectOfType<GameOverManager>();
+
+        if (gm != null)
+        {
+            gm.TriggerGameOver(); // 게임오버 패널 띄우기
+        }
+        else
+        {
+            Debug.LogError("씬에 GameOverManager가 없습니다!");
+        }
     }
 }
