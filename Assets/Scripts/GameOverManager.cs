@@ -16,7 +16,7 @@ public class GameOverManager : MonoBehaviour
     public Text tipText;
 
     // 0.0 ~ 1.0 사이 값 조절 (0.5 = 50% 확률로 팁 등장, 나머지는 안 나옴)
-    [Range(0f, 1f)] public float tipChance = 0.7f;
+    [Range(0f, 1f)] public float tipChance = 0.8f;
 
     public string[] gameTips;
 
@@ -42,11 +42,9 @@ public class GameOverManager : MonoBehaviour
                 "이 게임은 완벽해요! 버그는 절대 존재하지 않아요!",
                 "냐밍을 쓰다듬어주면 무언가 일어난다는 소문이...",
                 "냐밍은 가끔 당신을 쳐다보고 있어요.",
-                "고양이 관련 지식 뭐시기~~",
-                "고양이 관련 지식 뭐시기~~뭐시기~~",
-                "고양이 관련 지식 뭐시기~~뭐시기~~뭐시기~~",
-                "고양이 관련 지식 뭐시기~~뭐시기~~뭐시기~~뭐시기~~",
-                "고양이 관련 지식 뭐시기~~뭐시기~~뭐시기~~뭐시기~~"
+                "속도가 느린가요? 쓰레기통을 연타하면...",
+                "냐밍은 고양이를 좋아한다.",
+                "고양이는 완벽한 생물이다."
             };
         }
     }

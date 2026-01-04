@@ -387,7 +387,7 @@ MonoBehaviour:
   noText: {fileID: 1815629792}
   tipTitle: {fileID: 12984404}
   tipText: {fileID: 134127741}
-  tipChance: 0.7
+  tipChance: 1
   gameTips: []
 --- !u!1 &134127739
 GameObject:
@@ -561,7 +561,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 23.571325, y: 0}
+  m_AnchoredPosition: {x: 23.60183, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &355959459
