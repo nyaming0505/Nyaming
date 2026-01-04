@@ -43,6 +43,8 @@ public class OrderManager : MonoBehaviour
 
     Dictionary<RecipeType, GameObject> prefabMap;
 
+    public float timeMultiplier = 1.0f;
+
     void Awake()
     {
         if (Instance != null)
@@ -51,6 +53,8 @@ public class OrderManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        timeMultiplier = 1.0f;
 
         prefabMap = new Dictionary<RecipeType, GameObject>();
         foreach (var entry in orderUIPrefabs)
@@ -141,11 +145,13 @@ public class OrderManager : MonoBehaviour
         OrderUIItem uiItem = uiObj.GetComponent<OrderUIItem>();
         uiItem.Init(customer, recipe);
 
+        float finalTime = defaultOrderTime * timeMultiplier;
+
         OrderData order = new OrderData(
             customer,
             recipe,
             uiItem,
-            defaultOrderTime
+            finalTime
         );
 
         activeOrders.Add(order);
@@ -176,7 +182,7 @@ public class OrderManager : MonoBehaviour
         {
             Debug.Log("[ORDER] 성공");
             targetCustomer.OnDrinkServed();
-          //  ScoreManager.Instance.AddScore(order.recipe.score);
+            ScoreManager.Instance.AddScore(order.recipe.score);
         }
         else
         {
@@ -199,5 +205,18 @@ public class OrderManager : MonoBehaviour
     public int GetOrderCount()
     {
         return activeOrders.Count;
+    }
+
+    public void ActivateDoubleTimeBug()
+    {
+        timeMultiplier = 2.0f;
+
+        foreach (var order in activeOrders)
+        {
+            order.remainTime *= 2f;
+            order.maxTime *= 2f;
+        }
+
+        Debug.Log(" 버그 발동! 서비스 타임 2배 적용됨");
     }
 }

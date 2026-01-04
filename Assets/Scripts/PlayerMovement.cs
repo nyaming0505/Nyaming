@@ -2,6 +2,8 @@
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance;
+
     [Header("Movement Settings")]
     public float speed = 5f;              // 이동 속도
     public float inputThreshold = 0.1f;   // 입력 감지 최소값
@@ -15,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
@@ -59,5 +64,11 @@ public class PlayerMovement : MonoBehaviour
     {
         // 🔹 실제 이동 처리
         rb.velocity = input * speed;
+    }
+
+    public void ActivateSpeedBug()
+    {
+        speed *= 2f;
+        Debug.Log(" 버그 발동! 이동속도 2배 적용됨");
     }
 }

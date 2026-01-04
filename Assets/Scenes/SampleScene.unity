@@ -4452,6 +4452,86 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930655351}
   m_CullTransparentMesh: 1
+--- !u!1 &948111683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 948111684}
+  - component: {fileID: 948111686}
+  - component: {fileID: 948111685}
+  m_Layer: 5
+  m_Name: BugText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &948111684
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948111683}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1233556130}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -0.000015258789}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &948111685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948111683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: f6d7f3962c5f36f46b392e1af6192fa5, type: 3}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: SYSTEM ERROR
+--- !u!222 &948111686
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948111683}
+  m_CullTransparentMesh: 1
 --- !u!1 &966710554
 GameObject:
   m_ObjectHideFlags: 0
@@ -4589,6 +4669,7 @@ GameObject:
   - component: {fileID: 1055139326}
   - component: {fileID: 1055139325}
   - component: {fileID: 1055139327}
+  - component: {fileID: 1055139328}
   m_Layer: 0
   m_Name: counter
   m_TagString: Untagged
@@ -4878,6 +4959,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.763, y: 0.58340645}
   m_EdgeRadius: 0
+--- !u!114 &1055139328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055139322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5778913cdb3c05b45a30c2c2c1a7ea8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bugType: 0
+  requiredClicks: 10
+  useTimeLimit: 0
+  timeLimit: 5
+  noticeText: {fileID: 948111685}
+  displayDuration: 2
 --- !u!1 &1097378984
 GameObject:
   m_ObjectHideFlags: 0
@@ -5493,6 +5592,7 @@ RectTransform:
   - {fileID: 682234418}
   - {fileID: 1399124607}
   - {fileID: 819855844}
+  - {fileID: 948111684}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5689,6 +5789,7 @@ GameObject:
   - component: {fileID: 1381433642}
   - component: {fileID: 1381433641}
   - component: {fileID: 1381433640}
+  - component: {fileID: 1381433644}
   m_Layer: 0
   m_Name: Trash
   m_TagString: Untagged
@@ -5886,6 +5987,24 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1381433644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381433638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5778913cdb3c05b45a30c2c2c1a7ea8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bugType: 1
+  requiredClicks: 10
+  useTimeLimit: 0
+  timeLimit: 5
+  noticeText: {fileID: 948111685}
+  displayDuration: 2
 --- !u!1 &1399124606
 GameObject:
   m_ObjectHideFlags: 0
@@ -7936,6 +8055,7 @@ MonoBehaviour:
     orderUIPrefab: {fileID: 4895250863783167003, guid: bdce8f4ded32a62418d6f82875910aea, type: 3}
   - recipeType: 5
     orderUIPrefab: {fileID: 7805245604350121204, guid: 3529843a1e7f7644189b0695eac8672f, type: 3}
+  timeMultiplier: 1
 --- !u!224 &1824888785
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7969,6 +8089,7 @@ GameObject:
   - component: {fileID: 1854567467}
   - component: {fileID: 1854567469}
   - component: {fileID: 1854567470}
+  - component: {fileID: 1854567471}
   m_Layer: 0
   m_Name: Ingredients
   m_TagString: Untagged
@@ -8157,6 +8278,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.0210257, y: 1.6318748}
   m_EdgeRadius: 0
+--- !u!114 &1854567471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854567465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5778913cdb3c05b45a30c2c2c1a7ea8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bugType: 2
+  requiredClicks: 10
+  useTimeLimit: 0
+  timeLimit: 5
+  noticeText: {fileID: 948111685}
+  displayDuration: 2
 --- !u!1 &1902610669
 GameObject:
   m_ObjectHideFlags: 0

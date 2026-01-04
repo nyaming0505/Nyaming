@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,6 +16,9 @@ public class TitleManager : MonoBehaviour
     public Text pressText;
     public float blinkSpeed = 2.0f;
 
+    public UIGlitchEffect titleGlitchEffect;
+
+    // static 변수로 게임 상태 유지
     public static bool isGamePlaying = false;
     private bool isStarting = false;
 
@@ -28,13 +32,13 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
-        // 게임 상태에 따라 타이틀 켜기/끄기 결정
         if (isGamePlaying)
         {
             if (gameTitleObject != null) gameTitleObject.SetActive(false);
+            StartCoroutine(LoadGameSceneAdditive());
         }
         else
-        {
+        { 
             ShowTitleScreen();
         }
     }
@@ -43,14 +47,12 @@ public class TitleManager : MonoBehaviour
     {
         if (isGamePlaying) return;
 
-        // 쿨타임 체크
         if (inputCooldown > 0)
         {
             inputCooldown -= Time.deltaTime;
             return;
         }
 
-        // 깜빡임 효과
         if (pressText != null)
         {
             Color color = pressText.color;
@@ -58,7 +60,6 @@ public class TitleManager : MonoBehaviour
             pressText.color = color;
         }
 
-        // 시작 키 입력
         if (Input.anyKeyDown && !isStarting)
         {
             StartGame();
@@ -70,14 +71,46 @@ public class TitleManager : MonoBehaviour
         isStarting = true;
         isGamePlaying = true;
 
-        // 게임 씬 로드 + UI 씬 얹기
-        SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
-        SceneManager.LoadScene(uiSceneName, LoadSceneMode.Additive);
+        if (EndingManager.Instance != null)
+        {
+            EndingManager.Instance.ResetBugs();
+        }
+
+        if (HeartManager.instance != null)
+        {
+            HeartManager.instance.ResetHearts();
+        }   
+        
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.ResetScore();
+        }
+
+        pressText.color = Color.white;
+
+        if (gameTitleObject != null) gameTitleObject.SetActive(false);
+
+        
+        StartCoroutine(LoadGameSceneAdditive());
+    }
+
+    IEnumerator LoadGameSceneAdditive()
+    {
+        if (SceneManager.GetSceneByName(gameSceneName).isLoaded)
+        {
+            yield return SceneManager.UnloadSceneAsync(gameSceneName);
+        }
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(gameSceneName, LoadSceneMode.Additive);
+    
+        while (!op.isDone)
+        {
+            yield return null;
+        }
 
         Time.timeScale = 1f;
     }
 
-    // 타이틀 스크린 보여주기
     public void ShowTitleScreen()
     {
         isGamePlaying = false;
@@ -88,7 +121,16 @@ public class TitleManager : MonoBehaviour
             gameTitleObject.SetActive(true);
         }
 
-        // 입력 방지 쿨타임
+        if (titleGlitchEffect != null && EndingManager.Instance != null)
+        {
+            titleGlitchEffect.SetGlitchLevel(EndingManager.Instance.bugCount);
+            if (EndingManager.Instance.bugCount >= 2)
+            {
+                pressText.color = Color.red;
+            }
+            Debug.Log($"타이틀 복귀! 버그 개수: {EndingManager.Instance.bugCount}");
+        }
+
         inputCooldown = 0.5f;
     }
 }

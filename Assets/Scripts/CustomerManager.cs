@@ -48,7 +48,10 @@ public class CustomerManager : MonoBehaviour
         if (total >= maxTotalCustomer)
             return;
 
-        Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+
+        newCustomer.transform.SetParent(this.transform);
+
         Debug.Log("¼Õ´Ô »ý¼ºµÊ");
     }
 }

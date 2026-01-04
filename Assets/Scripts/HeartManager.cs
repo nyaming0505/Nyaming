@@ -21,11 +21,9 @@ public class HeartManager : MonoBehaviour
         if (instance == null) instance = this;
     }
 
-    // 게임 시작 시 하트 꽉 채우기
     void Start()
     {
-        currentHearts = maxHearts;
-        UpdateHeartUI();
+        ResetHearts();
     }
 
     void Update()
@@ -84,5 +82,12 @@ public class HeartManager : MonoBehaviour
         {
             Debug.LogError("GameOverManager 인스턴스를 찾을 수 없습니다!");
         }
+    }
+
+    public void ResetHearts()
+    {
+        currentHearts = maxHearts;
+        UpdateHeartUI();
+        Debug.Log("하트 리셋 완료! 현재 하트: " + currentHearts);
     }
 }
