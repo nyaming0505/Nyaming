@@ -30,20 +30,41 @@ public class CustomerInteract : MonoBehaviour
         if (!pressKeyUI.activeSelf)
             return;
 
-        if (!QueueManager.Instance.IsFrontCustomer(customer))
-            return;
-
-        if (customer.HasOrdered)   // ⭐ 추가
-            return;
-
-        if (Input.GetKeyDown(KeyCode.E))
+        // =========================
+        // 주문 받기
+        // =========================
+        if (!customer.HasOrdered)
         {
-            OrderManager.Instance.StartOrder(customer);
-            pressKeyUI.SetActive(false);
+            if (!QueueManager.Instance.IsFrontCustomer(customer))
+                return;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                OrderManager.Instance.StartOrder(customer);
+                pressKeyUI.SetActive(false);
+            }
         }
 
+        // =========================
+        // 음료 서빙
+        // =========================
+        else
+        {
+            if (customer.currentState != CustomerState.WaitingForDrink)
+                return;
+
+            if (CupManager.Instance.GetIngredientCount() == 0)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("??");
+                OrderManager.Instance.CheckOrder(customer);
+          
+                pressKeyUI.SetActive(false);
+            }
+        }
 
     }
-
    
 }

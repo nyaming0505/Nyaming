@@ -5,6 +5,7 @@ public class PathManager : MonoBehaviour
     public static PathManager Instance;
 
     [Header("Path Points")]
+    public Transform exitMidPoint;
     public Transform enterPoint;
     public Transform exitPoint;
 
@@ -18,7 +19,10 @@ public class PathManager : MonoBehaviour
     {
         return enterPoint.position;
     }
-
+    public Vector2 GetExitMidPoint()
+    {
+        return exitMidPoint.position;
+    }
     public Vector2 GetExitPoint()
     {
         return exitPoint.position;

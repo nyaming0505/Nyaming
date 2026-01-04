@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class RecipeChecker
 {
@@ -35,11 +36,19 @@ public enum CustomerState
     MoveToSeat,
     WaitingForDrink,
     LeaveSuccess,
-    LeaveFail
+    LeaveFail,
+    LeaveToPath,  
+    LeaveExit,
 }
 
 public class Customer : MonoBehaviour
 {
+
+    [Header("Emotion Icon")]
+    public Image emotionIcon;
+    public Sprite successEmotion;
+    public Sprite failEmotion;
+
     [Header("Movement")]
     public float moveSpeed = 2f;
 
@@ -55,14 +64,14 @@ public class Customer : MonoBehaviour
 
     public bool HasOrdered { get; private set; }
 
+    bool exitMoveFirstY = false;
 
-    // =========================
-    // Unity Life Cycle
-    // =========================
+    SpriteRenderer spriteRenderer;
 
     void Start()
     {
         ChangeState(CustomerState.Enter);
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -101,7 +110,6 @@ public class Customer : MonoBehaviour
 
             case CustomerState.Ordering:
                 StopMoving();
-                // 주문 생성은 외부(OrderManager)에서 처리
                 break;
 
             case CustomerState.MoveToSeat:
@@ -121,14 +129,25 @@ public class Customer : MonoBehaviour
             case CustomerState.LeaveSuccess:
             case CustomerState.LeaveFail:
 
+                animator.SetBool("IsSitting", false);
+
                 if (assignedChair != null)
                 {
                     assignedChair.Release();
                     assignedChair = null;
                 }
-                MoveTo(PathManager.Instance.GetExitPoint());
+
+                ChangeState(CustomerState.LeaveToPath);
                 break;
 
+            case CustomerState.LeaveToPath:
+                exitMoveFirstY = true;
+                MoveTo(PathManager.Instance.GetExitMidPoint());
+                break;
+
+            case CustomerState.LeaveExit:
+                MoveTo(PathManager.Instance.GetExitPoint());
+                break;
 
         }
     }
@@ -158,6 +177,14 @@ public class Customer : MonoBehaviour
                     ChangeState(CustomerState.WaitingForDrink);
                 }
                 break;
+
+            case CustomerState.LeaveToPath:
+                ChangeState(CustomerState.LeaveExit);
+                break;
+
+            case CustomerState.LeaveExit:
+                Destroy(gameObject);
+                break;
             case CustomerState.LeaveSuccess:
             case CustomerState.LeaveFail:
                 Destroy(gameObject);
@@ -171,7 +198,6 @@ public class Customer : MonoBehaviour
 
     void Move()
     {
-
         if (!isMoving)
         {
             animator.SetBool("IsMoving", false);
@@ -180,46 +206,80 @@ public class Customer : MonoBehaviour
 
         Vector2 current = transform.position;
         Vector2 next = current;
-
         Vector2 delta = targetPosition - current;
 
-        // ⭐ X축 먼저 이동
-        if (Mathf.Abs(delta.x) > 0.01f)
+        if (exitMoveFirstY)
         {
-            next.x = Mathf.MoveTowards(
-                current.x,
-                targetPosition.x,
-                moveSpeed * Time.deltaTime
-            );
+            // ⭐ Y → X 이동
+            if (Mathf.Abs(delta.y) > 0.01f)
+            {
+                next.y = Mathf.MoveTowards(
+                    current.y,
+                    targetPosition.y,
+                    moveSpeed * Time.deltaTime
+                );
 
-            UpdateAnimation(new Vector2(delta.x, 0));
-        }
-        // ⭐ X가 맞으면 Y축 이동
-        else if (Mathf.Abs(delta.y) > 0.01f)
-        {
-            next.y = Mathf.MoveTowards(
-                current.y,
-                targetPosition.y,
-                moveSpeed * Time.deltaTime
-            );
+                UpdateAnimation(new Vector2(0, delta.y));
+            }
+            else if (Mathf.Abs(delta.x) > 0.01f)
+            {
+                next.x = Mathf.MoveTowards(
+                    current.x,
+                    targetPosition.x,
+                    moveSpeed * Time.deltaTime
+                );
 
-            UpdateAnimation(new Vector2(0, delta.y));
+                UpdateAnimation(new Vector2(delta.x, 0));
+            }
+            else
+            {
+                Arrive();
+            }
         }
         else
         {
-            // 도착
-            transform.position = targetPosition;
-            isMoving = false;
-            animator.SetBool("IsMoving", false);
-            return;
+            // ⭐ 기존 X → Y 이동
+            if (Mathf.Abs(delta.x) > 0.01f)
+            {
+                next.x = Mathf.MoveTowards(
+                    current.x,
+                    targetPosition.x,
+                    moveSpeed * Time.deltaTime
+                );
+
+                UpdateAnimation(new Vector2(delta.x, 0));
+            }
+            else if (Mathf.Abs(delta.y) > 0.01f)
+            {
+                next.y = Mathf.MoveTowards(
+                    current.y,
+                    targetPosition.y,
+                    moveSpeed * Time.deltaTime
+                );
+
+                UpdateAnimation(new Vector2(0, delta.y));
+            }
+            else
+            {
+                Arrive();
+            }
         }
 
         transform.position = next;
     }
 
+    void Arrive()
+    {
+        transform.position = targetPosition;
+        isMoving = false;
+        exitMoveFirstY = false; // ⭐ 리셋 중요
+        animator.SetBool("IsMoving", false);
+    }
+
 
     public void MoveTo(Vector2 pos)
     {
+        animator.SetBool("IsSitting", false);
         targetPosition = pos;
         isMoving = true;
     }
@@ -245,20 +305,27 @@ public class Customer : MonoBehaviour
         {
             moveX = Mathf.Sign(dir.x);
             moveY = 0;
+
+            // ⭐ 좌우 이동일 때만 flip 처리
+            if (dir.x < 0)
+                spriteRenderer.flipX = true;   // 왼쪽
+            else if (dir.x > 0)
+                spriteRenderer.flipX = false;  // 오른쪽
         }
         else
         {
             moveX = 0;
             moveY = Mathf.Sign(dir.y);
+            // 상하 이동 시 flip 유지 (변경 안 함)
         }
 
         animator.SetFloat("MoveX", moveX);
         animator.SetFloat("MoveY", moveY);
 
-        // ⭐ 마지막 방향 저장
         animator.SetFloat("lastMoveX", moveX);
         animator.SetFloat("lastMoveY", moveY);
     }
+
 
     // =========================
     // 외부 이벤트 호출
@@ -278,11 +345,13 @@ public class Customer : MonoBehaviour
 
     public void OnDrinkServed()
     {
+        ShowEmotion(successEmotion);
         ChangeState(CustomerState.LeaveSuccess);
     }
 
     public void OnTimeOver()
     {
+        ShowEmotion(failEmotion);
         ChangeState(CustomerState.LeaveFail);
     }
 
@@ -296,15 +365,36 @@ public class Customer : MonoBehaviour
         animator.SetBool("IsMoving", false);
         animator.SetBool("IsSitting", true);
 
+        // 방향 값은 애니메이터용 (선택)
+        animator.SetFloat("lastMoveY", 0);
+
         if (chair.sitDirection == SitDirection.Left)
         {
             animator.SetFloat("lastMoveX", -1);
-            animator.SetFloat("lastMoveY", 0);
+            spriteRenderer.flipX = true;
         }
         else
         {
             animator.SetFloat("lastMoveX", 1);
-            animator.SetFloat("lastMoveY", 0);
+            spriteRenderer.flipX = false;
         }
     }
+
+    void ShowEmotion(Sprite sprite, float duration = 2f)
+    {
+        if (emotionIcon == null) return;
+
+        emotionIcon.sprite = sprite;
+        emotionIcon.enabled = true;
+
+        CancelInvoke(nameof(HideEmotion));
+        Invoke(nameof(HideEmotion), duration);
+    }
+
+    void HideEmotion()
+    {
+        if (emotionIcon == null) return;
+        emotionIcon.enabled = false;
+    }
+
 }

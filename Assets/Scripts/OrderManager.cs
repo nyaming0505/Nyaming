@@ -28,6 +28,12 @@ public class OrderManager : MonoBehaviour
 
     private List<OrderData> activeOrders = new List<OrderData>();
 
+    [Header("Order UI")]
+    public Transform orderUIParent;
+    public List<OrderUIPrefabEntry> orderUIPrefabs;
+
+    Dictionary<RecipeType, GameObject> prefabMap;
+
     void Awake()
     {
         if (Instance != null)
@@ -36,6 +42,10 @@ public class OrderManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        prefabMap = new Dictionary<RecipeType, GameObject>();
+        foreach (var entry in orderUIPrefabs)
+            prefabMap[entry.recipeType] = entry.orderUIPrefab;
     }
 
     // =========================
@@ -75,59 +85,61 @@ public class OrderManager : MonoBehaviour
         customer.MarkOrdered();
         customer.OnOrderTaken(chair);
 
-        // TODO : 주문 UI 추가
+
+        //오더UI 생성
+        if (!prefabMap.TryGetValue(recipe.recipeType, out var prefab))
+        {
+            Debug.LogError($"프리팹 없음: {recipe.recipeType}");
+            return;
+        }
+
+        GameObject ui = Instantiate(prefab, orderUIParent);
+        ui.GetComponent<OrderUIItem>().Init(customer, recipe);
+
+
     }
 
     // =========================
     // 주문 판정 (컵 기준)
     // =========================
-    public void CheckOrder()
+    public void CheckOrder(Customer targetCustomer)
     {
-        if (activeOrders.Count == 0)
+        if (targetCustomer == null)
+            return;
+
+        // 해당 손님의 주문 찾기
+        OrderData order = activeOrders.Find(o => o.customer == targetCustomer);
+
+        if (order == null)
         {
-            Debug.Log("처리할 주문 없음");
+            Debug.Log("해당 손님의 주문이 없습니다.");
             return;
         }
-
-        // ⭐ 일단 제일 먼저 받은 주문부터 처리
-        OrderData order = activeOrders[0];
-
         bool success = RecipeChecker.Check(
-            CupManager.Instance.GetIngredients(),
-            order.recipe
-        );
-
+        CupManager.Instance.GetIngredients(),
+        order.recipe
+    );
         if (success)
         {
             Debug.Log("[ORDER] 성공");
-            order.customer.OnDrinkServed();
-            ScoreManager.Instance.AddScore(100);
+            targetCustomer.OnDrinkServed();
+          //  ScoreManager.Instance.AddScore(order.recipe.score);
         }
         else
         {
             Debug.Log("[ORDER] 실패");
-            order.customer.OnTimeOver();
+            targetCustomer.OnTimeOver();
         }
 
-        activeOrders.RemoveAt(0);
+        activeOrders.Remove(order);
         CupManager.Instance.ClearCup();
 
-        // TODO : 주문 UI 갱신
+        // TODO : 해당 손님의 주문 UI 제거
+
     }
 
     public int GetOrderCount()
     {
         return activeOrders.Count;
     }
-
-#if UNITY_EDITOR
-    void Update()
-    {
-        // 테스트용
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            CheckOrder();
-        }
-    }
-#endif
 }
