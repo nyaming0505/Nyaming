@@ -7,12 +7,15 @@ public class OrderData
 {
     public Customer customer;
     public Recipe recipe;
+    public OrderUIItem uiItem;
 
-    public OrderData(Customer customer, Recipe recipe)
+    public OrderData(Customer customer, Recipe recipe, OrderUIItem uiItem)
     {
         this.customer = customer;
         this.recipe = recipe;
+        this.uiItem = uiItem;
     }
+
 }
 
 
@@ -77,8 +80,7 @@ public class OrderManager : MonoBehaviour
 
         Recipe recipe = recipeDatabase.GetRandomRecipe();
 
-        OrderData order = new OrderData(customer, recipe);
-        activeOrders.Add(order);
+        
 
         Debug.Log($"[ORDER] 추가됨: {recipe.recipeName} / 현재 주문 수: {activeOrders.Count}");
         chair.TryOccupy();
@@ -93,8 +95,12 @@ public class OrderManager : MonoBehaviour
             return;
         }
 
-        GameObject ui = Instantiate(prefab, orderUIParent);
-        ui.GetComponent<OrderUIItem>().Init(customer, recipe);
+        GameObject uiObj = Instantiate(prefab, orderUIParent);
+        OrderUIItem uiItem = uiObj.GetComponent<OrderUIItem>();
+        uiItem.Init(customer, recipe);
+
+        OrderData order = new OrderData(customer, recipe, uiItem);
+        activeOrders.Add(order);
 
 
     }
@@ -135,6 +141,13 @@ public class OrderManager : MonoBehaviour
         CupManager.Instance.ClearCup();
 
         // TODO : 해당 손님의 주문 UI 제거
+        if (order.uiItem != null)
+        {
+            Destroy(order.uiItem.gameObject);
+        }
+
+        activeOrders.Remove(order);
+        CupManager.Instance.ClearCup();
 
     }
 
