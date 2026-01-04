@@ -24,11 +24,14 @@ public class OrderUIItem : MonoBehaviour
     {
         owner = customer;
         this.recipe = recipe;
+        timerFill.fillAmount = 1f;
     }
 
-    void Update()
+
+
+    public void UpdateTimer(float ratio)
     {
-        currentTime += Time.deltaTime;
-        timerFill.fillAmount = 1 - (currentTime / timeLimit);
+        Debug.Log($"[UI TIMER] ratio = {ratio}");
+        timerFill.fillAmount = Mathf.Clamp01(ratio);
     }
 }

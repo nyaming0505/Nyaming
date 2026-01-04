@@ -1307,6 +1307,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27683d3d14c92a84581a3cc7eb0ea51b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EspressoSprite: {fileID: 677125095, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
+  AmeriacanoSprite: {fileID: -1192290544, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
+  ChcoLatteSprite: {fileID: 1159573365, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
+  MochaLatteprite: {fileID: 2068640843, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
+  DoubleShotSprite: {fileID: -2047468546, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
+  CaffeLatteSprite: {fileID: -320663474, guid: c02a9ae1189b19746b2e7a83d4a83752, type: 3}
 --- !u!4 &122215666
 Transform:
   m_ObjectHideFlags: 0
@@ -4490,7 +4496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b998ca5585fd864c87ad3048a7c5361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 7547916873480201254, guid: b66d275974706f64b8e3ba73bd404a5c, type: 3}
+  customerPrefab: {fileID: 3722153007813414530, guid: b66d275974706f64b8e3ba73bd404a5c, type: 3}
   spawnPoint: {fileID: 1153870290}
   spawnInterval: 1
   maxQueueCount: 3
@@ -7913,6 +7919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7145c97d716d94147894731f769dab41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultOrderTime: 15
   recipeDatabase: {fileID: 122215665}
   maxOrders: 4
   orderUIParent: {fileID: 2043262017}

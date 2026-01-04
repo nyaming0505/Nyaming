@@ -18,11 +18,19 @@ public class Recipe : ScriptableObject
     public string recipeName;
     public List<CupIngredient> ingredients;
     public int score;
+    public Sprite orderSprite;
 }
 public class RecipeDatabase : MonoBehaviour
 {
     public static RecipeDatabase Instance;
     List<Recipe> recipes = new List<Recipe>();
+
+    public Sprite EspressoSprite;
+    public Sprite AmeriacanoSprite;
+    public Sprite ChcoLatteSprite;
+    public Sprite MochaLatteprite;
+    public Sprite DoubleShotSprite;
+    public Sprite CaffeLatteSprite;
 
     void Awake()
     {
@@ -43,7 +51,8 @@ public class RecipeDatabase : MonoBehaviour
             RecipeType.Espresso,
             "에스프레소",
             new List<CupIngredient> { CupIngredient.Espresso },
-            100
+            100,
+            EspressoSprite
         ));
 
         recipes.Add(CreateRecipe(
@@ -54,7 +63,8 @@ public class RecipeDatabase : MonoBehaviour
                 CupIngredient.Espresso,
                 CupIngredient.Water
             },
-            150
+            150,
+            AmeriacanoSprite
         ));
 
         recipes.Add(CreateRecipe(
@@ -65,7 +75,8 @@ public class RecipeDatabase : MonoBehaviour
                 CupIngredient.Espresso,
                 CupIngredient.Milk
             },
-            180
+            180,
+            CaffeLatteSprite
         ));
 
         recipes.Add(CreateRecipe(
@@ -76,7 +87,8 @@ public class RecipeDatabase : MonoBehaviour
                 CupIngredient.Milk,
                 CupIngredient.Choco
             },
-            160
+            160,
+            ChcoLatteSprite
         ));
 
         recipes.Add(CreateRecipe(
@@ -88,7 +100,8 @@ public class RecipeDatabase : MonoBehaviour
                 CupIngredient.Milk,
                 CupIngredient.Choco
             },
-            220
+            220,
+            MochaLatteprite
         ));
 
         recipes.Add(CreateRecipe(
@@ -99,7 +112,8 @@ public class RecipeDatabase : MonoBehaviour
                 CupIngredient.Espresso,
                 CupIngredient.Espresso
             },
-            200
+            200,
+            DoubleShotSprite
         ));
     }
 
@@ -107,7 +121,7 @@ public class RecipeDatabase : MonoBehaviour
         RecipeType type,
         string name,
         List<CupIngredient> ingredients,
-        int score)
+        int score, Sprite orderSprite)
     {
         // ? ScriptableObject 생성 방식 OK
         Recipe recipe = ScriptableObject.CreateInstance<Recipe>();
@@ -115,7 +129,7 @@ public class RecipeDatabase : MonoBehaviour
         recipe.recipeName = name;
         recipe.ingredients = ingredients;
         recipe.score = score;
-
+        recipe.orderSprite = orderSprite;
         return recipe;
     }
 

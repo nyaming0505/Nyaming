@@ -8,12 +8,16 @@ public class OrderData
     public Customer customer;
     public Recipe recipe;
     public OrderUIItem uiItem;
+    public float remainTime;
+    public float maxTime;
 
-    public OrderData(Customer customer, Recipe recipe, OrderUIItem uiItem)
+    public OrderData(Customer customer, Recipe recipe, OrderUIItem uiItem, float time)
     {
         this.customer = customer;
         this.recipe = recipe;
         this.uiItem = uiItem;
+        this.maxTime = time;
+        this.remainTime = time;
     }
 
 }
@@ -22,6 +26,8 @@ public class OrderData
 public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance;
+    [Header("Order Time")]
+    public float defaultOrderTime = 20f;
 
     [Header("References")]
     public RecipeDatabase recipeDatabase;
@@ -50,6 +56,44 @@ public class OrderManager : MonoBehaviour
         foreach (var entry in orderUIPrefabs)
             prefabMap[entry.recipeType] = entry.orderUIPrefab;
     }
+
+    void Update()
+    {
+        UpdateOrderTimers();
+    }
+    void UpdateOrderTimers()
+    {
+        for (int i = activeOrders.Count - 1; i >= 0; i--)
+        {
+            OrderData order = activeOrders[i];
+
+            order.remainTime -= Time.deltaTime;
+
+            // UI 타이머 갱신
+            if (order.uiItem != null)
+                order.uiItem.UpdateTimer(order.remainTime / order.maxTime);
+
+            // ⏰ 시간 초과
+            if (order.remainTime <= 0f)
+            {
+                HandleOrderTimeOver(order);
+            }
+        }
+    }
+
+    void HandleOrderTimeOver(OrderData order)
+    {
+        Debug.Log("[ORDER] 시간 초과");
+
+        order.customer.OnTimeOver();
+
+        if (order.uiItem != null)
+            Destroy(order.uiItem.gameObject);
+
+        activeOrders.Remove(order);
+    }
+
+
 
     // =========================
     // 주문 시작
@@ -80,12 +124,10 @@ public class OrderManager : MonoBehaviour
 
         Recipe recipe = recipeDatabase.GetRandomRecipe();
 
-        
-
         Debug.Log($"[ORDER] 추가됨: {recipe.recipeName} / 현재 주문 수: {activeOrders.Count}");
         chair.TryOccupy();
         customer.MarkOrdered();
-        customer.OnOrderTaken(chair);
+        customer.OnOrderTaken(chair, recipe);
 
 
         //오더UI 생성
@@ -99,9 +141,14 @@ public class OrderManager : MonoBehaviour
         OrderUIItem uiItem = uiObj.GetComponent<OrderUIItem>();
         uiItem.Init(customer, recipe);
 
-        OrderData order = new OrderData(customer, recipe, uiItem);
-        activeOrders.Add(order);
+        OrderData order = new OrderData(
+            customer,
+            recipe,
+            uiItem,
+            defaultOrderTime
+        );
 
+        activeOrders.Add(order);
 
     }
 
@@ -137,8 +184,6 @@ public class OrderManager : MonoBehaviour
             targetCustomer.OnTimeOver();
         }
 
-        activeOrders.Remove(order);
-        CupManager.Instance.ClearCup();
 
         // TODO : 해당 손님의 주문 UI 제거
         if (order.uiItem != null)

@@ -43,11 +43,7 @@ public enum CustomerState
 
 public class Customer : MonoBehaviour
 {
-
-    [Header("Emotion Icon")]
-    public Image emotionIcon;
-    public Sprite successEmotion;
-    public Sprite failEmotion;
+    public CustomerBubbleUI bubbleUI;
 
     [Header("Movement")]
     public float moveSpeed = 2f;
@@ -336,22 +332,23 @@ public class Customer : MonoBehaviour
         ChangeState(CustomerState.Ordering);
     }
 
-    public void OnOrderTaken(Chair chair)
+    public void OnOrderTaken(Chair chair, Recipe recipe)
     {
         QueueManager.Instance.LeaveQueue(this); // ⭐ 핵심
         assignedChair = chair;
+        bubbleUI.ShowOrder(recipe.orderSprite);
         ChangeState(CustomerState.MoveToSeat);
     }
 
     public void OnDrinkServed()
     {
-        ShowEmotion(successEmotion);
+        bubbleUI.ShowResult(true);
         ChangeState(CustomerState.LeaveSuccess);
     }
 
     public void OnTimeOver()
     {
-        ShowEmotion(failEmotion);
+        bubbleUI.ShowResult(false);
         ChangeState(CustomerState.LeaveFail);
     }
 
@@ -378,23 +375,6 @@ public class Customer : MonoBehaviour
             animator.SetFloat("lastMoveX", 1);
             spriteRenderer.flipX = false;
         }
-    }
-
-    void ShowEmotion(Sprite sprite, float duration = 2f)
-    {
-        if (emotionIcon == null) return;
-
-        emotionIcon.sprite = sprite;
-        emotionIcon.enabled = true;
-
-        CancelInvoke(nameof(HideEmotion));
-        Invoke(nameof(HideEmotion), duration);
-    }
-
-    void HideEmotion()
-    {
-        if (emotionIcon == null) return;
-        emotionIcon.enabled = false;
     }
 
 }
