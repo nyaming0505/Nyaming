@@ -27,7 +27,7 @@ public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance;
     [Header("Order Time")]
-    public float defaultOrderTime = 20f;
+    public float waitForDrinkTime = 20f;
 
     [Header("References")]
     public RecipeDatabase recipeDatabase;
@@ -157,7 +157,8 @@ public class OrderManager : MonoBehaviour
         OrderUIItem uiItem = uiObj.GetComponent<OrderUIItem>();
         uiItem.Init(customer, recipe);
 
-        float finalTime = defaultOrderTime * timeMultiplier;
+        float baseTime = LevelManager.Instance.GetWaitForDrinkTime();
+        float finalTime = baseTime * timeMultiplier;
 
         OrderData order = new OrderData(
             customer,

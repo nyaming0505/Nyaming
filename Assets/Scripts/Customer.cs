@@ -61,6 +61,7 @@ public class Customer : MonoBehaviour
     bool isMoving = false;
 
     Chair assignedChair;
+    bool hasLeft = false;
 
     public bool HasOrdered { get; private set; }
 
@@ -131,7 +132,7 @@ public class Customer : MonoBehaviour
 
             case CustomerState.LeaveSuccess:
             case CustomerState.LeaveFail:
-
+                QueueManager.Instance.LeaveQueue(this);
                 animator.SetBool("IsSitting", false);
 
                 if (assignedChair != null)
@@ -199,11 +200,11 @@ public class Customer : MonoBehaviour
                 break;
 
             case CustomerState.LeaveExit:
-                Destroy(gameObject);
+                Leave();
                 break;
             case CustomerState.LeaveSuccess:
             case CustomerState.LeaveFail:
-                Destroy(gameObject);
+                Leave();
                 break;
         }
     }
@@ -369,6 +370,7 @@ public class Customer : MonoBehaviour
 
     public void OnTimeOver()
     {
+
         bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(false);
         ChangeState(CustomerState.LeaveFail);
@@ -409,4 +411,12 @@ public class Customer : MonoBehaviour
         bubbleUI.HideWaitGauge();
     }
 
+    void Leave()
+    {
+        if (hasLeft) return;
+        hasLeft = true;
+
+        CustomerManager.Instance.OnCustomerLeave();
+        Destroy(gameObject);
+    }
 }
