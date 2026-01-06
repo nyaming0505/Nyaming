@@ -69,8 +69,13 @@ public class IngredientInteract : MonoBehaviour
         {
             playerInRange = false;
             player = null;
-
             inputLocked = false;
+
+            if (MiniGameState.isBusy)
+            {
+                MiniGameState.isBusy = false;
+                MiniGameState.waitForKeyRelease = false;
+            }
 
             miniGameUI.SetActive(false);
             pressKeyUI.SetActive(false);
