@@ -374,6 +374,10 @@ public class Customer : MonoBehaviour
         bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(false);
         ChangeState(CustomerState.LeaveFail);
+        if (HeartManager.instance != null)
+        {
+            HeartManager.instance.OnOrderFailed();
+        }
     }
 
     public void MarkOrdered()

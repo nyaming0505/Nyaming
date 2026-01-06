@@ -37,7 +37,10 @@ public class MiniGameManager : MonoBehaviour
     {
         isPlaying = true;
 
-        rotateSpeed = LevelManager.Instance.GetMiniGameRotateSpeed();
+        if (LevelManager.Instance != null)
+        {
+            rotateSpeed = LevelManager.Instance.GetMiniGameRotateSpeed();
+        }
 
         currentAngle = Random.Range(-limitAngle, limitAngle);
         direction = (Random.value > 0.5f) ? 1 : -1;

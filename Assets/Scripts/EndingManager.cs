@@ -27,12 +27,6 @@ public class EndingManager : MonoBehaviour
     {
         bugCount++;
         Debug.Log("현재 버그 카운트: " + bugCount);
-
-        if (bugCount >= 3)
-        {
-            Debug.Log("진엔딩 조건 달성!");
-            TriggerTrueEnding();
-        }
     }
 
     public void TriggerTrueEnding()

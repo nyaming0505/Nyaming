@@ -101,8 +101,15 @@ public class GameOverManager : MonoBehaviour
             {
                 trueEndingPanel.SetActive(true);
                 trueEndingPanel.transform.SetAsLastSibling();
+
+                EndingSequence sequence = trueEndingPanel.GetComponent<EndingSequence>();
+                if (sequence != null)
+                {
+                    sequence.PlayEnding();
+                }
             }
             if (gameOverPanel != null) gameOverPanel.SetActive(false);
+            Time.timeScale = 1f;
         }
         else
         {
