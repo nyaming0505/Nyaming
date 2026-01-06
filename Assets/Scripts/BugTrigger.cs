@@ -25,28 +25,29 @@ public class BugTrigger : MonoBehaviour
     public Text noticeText;
     public float displayDuration = 2.0f;
 
-    [Header("커서 설정 (추가됨)")]
-    public Texture2D hoverCursor; // 인스펙터에서 손가락 모양 이미지 넣기
-    public Vector2 hotSpot = Vector2.zero; // 커서의 클릭 지점 (보통 0,0 또는 손가락 끝 좌표)
+    [Header("커서 설정")]
+    public Texture2D hoverCursor;
+    public Vector2 hotSpot = new Vector2(12, 12);
 
     private int currentClicks = 0;
     private float firstClickTime = 0f;
     private bool bugActivated = false;
+
+    private bool isHovering = false;
 
     void OnEnable()
     {
         ResetBug();
         if (noticeText != null)
         {
-            bugUI.SetActive(false);
-            noticeText.gameObject.SetActive(false);
+            if (bugUI) bugUI.SetActive(false);
+            if (noticeText) noticeText.gameObject.SetActive(false);
         }
     }
 
-    // 오브젝트가 비활성화되면 커서를 원래대로 되돌림 (안전장치)
     void OnDisable()
     {
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.ForceSoftware);
     }
 
     public void ResetBug()
@@ -54,32 +55,37 @@ public class BugTrigger : MonoBehaviour
         currentClicks = 0;
         firstClickTime = 0f;
         bugActivated = false;
-        Debug.Log("버그 전부 초기화됨");
+        isHovering = false;
     }
 
-    private void OnMouseEnter()
+    void Update()
     {
-        // 이미 버그가 발동되었다면 커서를 바꾸지 않음 (선택사항)
-        if (bugActivated) return;
+        if (bugActivated || Time.timeScale == 0f) return;
 
-        // 커서를 손가락 모양으로 변경
-        if (hoverCursor != null)
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        Collider2D myCollider = GetComponent<Collider2D>();
+        bool hit = myCollider.OverlapPoint(mousePos);
+
+        if (hit && !isHovering)
         {
-            Cursor.SetCursor(hoverCursor, hotSpot, CursorMode.Auto);
+            isHovering = true;
+            Cursor.SetCursor(hoverCursor, hotSpot, CursorMode.ForceSoftware);
+        }
+        else if (!hit && isHovering)
+        {
+            isHovering = false;
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.ForceSoftware);
+        }
+
+        if (isHovering && Input.GetMouseButtonDown(0))
+        {
+            HandleClick();
         }
     }
 
-    private void OnMouseExit()
+    void HandleClick()
     {
-        // 마우스가 나가면 기본 커서(null)로 복구
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-    }
-    // ==========================================
-
-    private void OnMouseDown()
-    {
-        if (bugActivated) return;
-
         if (useTimeLimit)
         {
             if (currentClicks == 0)
@@ -100,16 +106,15 @@ public class BugTrigger : MonoBehaviour
         if (currentClicks >= requiredClicks)
         {
             ActivateBug();
-
-            // 버그가 발동되면 더 이상 클릭할 필요 없으므로 커서를 원래대로 되돌림
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.ForceSoftware);
         }
     }
 
     void ActivateBug()
     {
         bugActivated = true;
-        SoundManager.Instance.PlaySFX(SFXType.Error);
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlaySFX(SFXType.Error);
 
         if (EndingManager.Instance != null)
         {
@@ -120,10 +125,6 @@ public class BugTrigger : MonoBehaviour
         {
             StartCoroutine(ShowNoticeRoutine());
         }
-        else
-        {
-            Debug.LogWarning("Notice Text가 연결되지 않았습니다!");
-        }
 
         switch (bugType)
         {
@@ -133,14 +134,12 @@ public class BugTrigger : MonoBehaviour
                 if (ScoreManager.Instance != null)
                     ScoreManager.Instance.ActivateDoubleScoreBug();
                 break;
-
             case BugType.SpeedDouble:
                 noticeText.text = "SYSTEM ERROR : 속도 2배";
                 noticeText.color = Color.red;
                 if (PlayerMovement.Instance != null)
                     PlayerMovement.Instance.ActivateSpeedBug();
                 break;
-
             case BugType.TimeDouble:
                 noticeText.text = "SYSTEM ERROR : 시간 2배";
                 noticeText.color = Color.red;
@@ -154,9 +153,7 @@ public class BugTrigger : MonoBehaviour
     {
         bugUI.SetActive(true);
         noticeText.gameObject.SetActive(true);
-
         yield return new WaitForSeconds(displayDuration);
-
         bugUI.SetActive(false);
         noticeText.gameObject.SetActive(false);
     }
