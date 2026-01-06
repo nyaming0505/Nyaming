@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomerManager : MonoBehaviour
@@ -11,9 +10,9 @@ public class CustomerManager : MonoBehaviour
     public Transform spawnPoint;
     public float spawnInterval = 1f;
 
-    [Header("Limits")]
-    public int maxQueueCount = 3;
-    public int maxTotalCustomer = 7; // 큐 + 의자
+    int currentTotalCustomer;
+
+    Coroutine spawnCoroutine;
 
     void Awake()
     {
@@ -23,7 +22,15 @@ public class CustomerManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(SpawnRoutine());
+        StartSpawning();
+    }
+
+    void StartSpawning()
+    {
+        if (spawnCoroutine != null)
+            StopCoroutine(spawnCoroutine);
+
+        spawnCoroutine = StartCoroutine(SpawnRoutine());
     }
 
     IEnumerator SpawnRoutine()
@@ -37,21 +44,30 @@ public class CustomerManager : MonoBehaviour
 
     void TrySpawnCustomer()
     {
-        int queueCount = QueueManager.Instance.GetQueueCount();
-        int seatCount = ChairManager.Instance.GetOccupiedCount();
-        int total = queueCount + seatCount;
+        int maxAllowed = LevelManager.Instance.GetMaxTotalCustomers();
 
-        // ?? 조건 체크
-        if (queueCount >= maxQueueCount)
+        if (currentTotalCustomer >= maxAllowed)
             return;
 
-        if (total >= maxTotalCustomer)
-            return;
+        SpawnCustomer();
+    }
 
-        GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+    void SpawnCustomer()
+    {
+        Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        currentTotalCustomer++;
+    }
 
-        newCustomer.transform.SetParent(this.transform);
+    // ? 손님이 성공/실패로 나갈 때 반드시 호출
+    public void OnCustomerLeave()
+    {
+        currentTotalCustomer--;
+        currentTotalCustomer = Mathf.Max(0, currentTotalCustomer);
+    }
 
-        Debug.Log("손님 생성됨");
+    // 디버깅용
+    public int GetCurrentCustomerCount()
+    {
+        return currentTotalCustomer;
     }
 }

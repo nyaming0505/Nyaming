@@ -195,6 +195,8 @@ public class OrderManager : MonoBehaviour
             Debug.Log("[ORDER] 성공");
             targetCustomer.OnDrinkServed();
             ScoreManager.Instance.AddScore(order.recipe.score);
+
+            LevelManager.Instance.OnCustomerServed();
         }
         else
         {

@@ -818,7 +818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleUI: {fileID: 7295213831714119620}
-  maxQueueWaitTime: 8
+  maxQueueWaitTime: 10
   moveSpeed: 2
   animator: {fileID: 7295213831714119645}
   currentState: 0
