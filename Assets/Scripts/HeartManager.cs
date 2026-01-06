@@ -26,6 +26,17 @@ public class HeartManager : MonoBehaviour
         ResetHearts();
     }
 
+    void Update()
+    {
+        // 🧪 [테스트용] 스페이스바를 누르면 손님 주문 실패 상황을 가정함
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("테스트: 주문 실패! 하트 감소!");
+            OnOrderFailed();
+        }
+    }
+
+
     // 손님 주문 실패 시 호출될 함수
     public void OnOrderFailed()
     {

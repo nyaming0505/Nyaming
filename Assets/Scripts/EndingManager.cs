@@ -6,6 +6,8 @@ public class EndingManager : MonoBehaviour
 
     public int bugCount = 0;
 
+    public EndingSequence endingSequence;
+
     void Awake()
     {
         if (Instance == null)
@@ -29,6 +31,19 @@ public class EndingManager : MonoBehaviour
         if (bugCount >= 3)
         {
             Debug.Log("진엔딩 조건 달성!");
+            TriggerTrueEnding();
+        }
+    }
+
+    public void TriggerTrueEnding()
+    {
+        if (endingSequence != null)
+        {
+            endingSequence.PlayEnding();
+        }
+        else
+        {
+            Debug.LogError("EndingManager에 EndingSequence가 연결되지 않았습니다!");
         }
     }
 
