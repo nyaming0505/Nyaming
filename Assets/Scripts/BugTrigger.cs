@@ -1,27 +1,31 @@
-using UnityEngine;
-using UnityEngine.UI; 
-using System.Collections; 
+ï»¿using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 public class BugTrigger : MonoBehaviour
 {
     public enum BugType
     {
-        ScoreDouble, // °è»ê´ë (Á¡¼ö 2¹è)
-        SpeedDouble, // ¾²·¹±âÅë (¼Óµµ 2¹è)
-        TimeDouble   // À½·á Á¦Á¶´ë ( ÀÌµ¿¼Óµµ 2¹è)
+        ScoreDouble, // ê³„ì‚°ëŒ€ (ì ìˆ˜ 2ë°°)
+        SpeedDouble, // ì“°ë ˆê¸°í†µ (ì†ë„ 2ë°°)
+        TimeDouble   // ìŒë£Œ ì œì¡°ëŒ€ ( ì´ë™ì†ë„ 2ë°°)
     }
 
-    [Header("¹ö±× ¼³Á¤")]
+    [Header("ë²„ê·¸ ì„¤ì •")]
     public BugType bugType;
     public int requiredClicks = 10;
 
-    [Header("½Ã°£ Á¦ÇÑ ¼³Á¤ (¾²·¹±âÅë¿ë)")]
+    [Header("ì‹œê°„ ì œí•œ ì„¤ì • (ì“°ë ˆê¸°í†µìš©)")]
     public bool useTimeLimit = false;
     public float timeLimit = 5.0f;
 
-    [Header("UI ¾Ë¸² ¼³Á¤")]
+    [Header("UI ì•Œë¦¼ ì„¤ì •")]
     public Text noticeText;
     public float displayDuration = 2.0f;
+
+    [Header("ì»¤ì„œ ì„¤ì • (ì¶”ê°€ë¨)")]
+    public Texture2D hoverCursor; // ì¸ìŠ¤í™í„°ì—ì„œ ì†ê°€ë½ ëª¨ì–‘ ì´ë¯¸ì§€ ë„£ê¸°
+    public Vector2 hotSpot = Vector2.zero; // ì»¤ì„œì˜ í´ë¦­ ì§€ì  (ë³´í†µ 0,0 ë˜ëŠ” ì†ê°€ë½ ë ì¢Œí‘œ)
 
     private int currentClicks = 0;
     private float firstClickTime = 0f;
@@ -33,13 +37,38 @@ public class BugTrigger : MonoBehaviour
         if (noticeText != null) noticeText.gameObject.SetActive(false);
     }
 
+    // ì˜¤ë¸Œì íŠ¸ê°€ ë¹„í™œì„±í™”ë˜ë©´ ì»¤ì„œë¥¼ ì›ë˜ëŒ€ë¡œ ë˜ëŒë¦¼ (ì•ˆì „ì¥ì¹˜)
+    void OnDisable()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
     public void ResetBug()
     {
         currentClicks = 0;
         firstClickTime = 0f;
         bugActivated = false;
-        Debug.Log("¹ö±× ÀüºÎ ÃÊ±âÈ­µÊ");
+        Debug.Log("ë²„ê·¸ ì „ë¶€ ì´ˆê¸°í™”ë¨");
     }
+
+    private void OnMouseEnter()
+    {
+        // ì´ë¯¸ ë²„ê·¸ê°€ ë°œë™ë˜ì—ˆë‹¤ë©´ ì»¤ì„œë¥¼ ë°”ê¾¸ì§€ ì•ŠìŒ (ì„ íƒì‚¬í•­)
+        if (bugActivated) return;
+
+        // ì»¤ì„œë¥¼ ì†ê°€ë½ ëª¨ì–‘ìœ¼ë¡œ ë³€ê²½
+        if (hoverCursor != null)
+        {
+            Cursor.SetCursor(hoverCursor, hotSpot, CursorMode.Auto);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        // ë§ˆìš°ìŠ¤ê°€ ë‚˜ê°€ë©´ ê¸°ë³¸ ì»¤ì„œ(null)ë¡œ ë³µêµ¬
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+    // ==========================================
 
     private void OnMouseDown()
     {
@@ -55,16 +84,19 @@ public class BugTrigger : MonoBehaviour
             {
                 currentClicks = 0;
                 firstClickTime = Time.time;
-                Debug.Log("½Ã°£ ÃÊ°ú! Å¬¸¯ È½¼ö ÃÊ±âÈ­");
+                Debug.Log("ì‹œê°„ ì´ˆê³¼! í´ë¦­ íšŸìˆ˜ ì´ˆê¸°í™”");
             }
         }
 
         currentClicks++;
-        Debug.Log($"{gameObject.name} Å¬¸¯µÊ: {currentClicks}/{requiredClicks}");
+        Debug.Log($"{gameObject.name} í´ë¦­ë¨: {currentClicks}/{requiredClicks}");
 
         if (currentClicks >= requiredClicks)
         {
             ActivateBug();
+
+            // ë²„ê·¸ê°€ ë°œë™ë˜ë©´ ë” ì´ìƒ í´ë¦­í•  í•„ìš” ì—†ìœ¼ë¯€ë¡œ ì»¤ì„œë¥¼ ì›ë˜ëŒ€ë¡œ ë˜ëŒë¦¼
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
     }
 
@@ -83,27 +115,27 @@ public class BugTrigger : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Notice Text°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogWarning("Notice Textê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
         }
 
         switch (bugType)
         {
             case BugType.ScoreDouble:
-                noticeText.text = "SYSTEM ERROR : Á¡¼ö 2¹è";
+                noticeText.text = "SYSTEM ERROR : ì ìˆ˜ 2ë°°";
                 noticeText.color = Color.yellow;
                 if (ScoreManager.Instance != null)
                     ScoreManager.Instance.ActivateDoubleScoreBug();
                 break;
 
             case BugType.SpeedDouble:
-                noticeText.text = "SYSTEM ERROR : ¼Óµµ 2¹è";
+                noticeText.text = "SYSTEM ERROR : ì†ë„ 2ë°°";
                 noticeText.color = Color.red;
                 if (PlayerMovement.Instance != null)
                     PlayerMovement.Instance.ActivateSpeedBug();
                 break;
 
             case BugType.TimeDouble:
-                noticeText.text = "SYSTEM ERROR : ½Ã°£ 2¹è";
+                noticeText.text = "SYSTEM ERROR : ì‹œê°„ 2ë°°";
                 noticeText.color = new Color(0.7f, 0.2f, 1.0f);
                 if (OrderManager.Instance != null)
                     OrderManager.Instance.ActivateDoubleTimeBug();
