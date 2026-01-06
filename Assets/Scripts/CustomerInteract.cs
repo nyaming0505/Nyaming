@@ -5,6 +5,7 @@ public class CustomerInteract : MonoBehaviour
     public GameObject pressKeyUI;
 
     Customer customer;
+    bool isPlayerInRange = false;
 
     void Start()
     {
@@ -15,62 +16,60 @@ public class CustomerInteract : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if (QueueManager.Instance.IsFrontCustomer(customer))
-        {
-            pressKeyUI.SetActive(true);
-        }
+        isPlayerInRange = true;
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        isPlayerInRange = false;
         pressKeyUI.SetActive(false);
     }
 
     void Update()
     {
-
-        if (pressKeyUI.activeSelf &&
-             !QueueManager.Instance.IsFrontCustomer(customer))
-        {
-            pressKeyUI.SetActive(false);
-            return;
-        }
-
-        if (!pressKeyUI.activeSelf)
+        if (!isPlayerInRange)
             return;
 
         // =========================
-        // 주문 받기
+        // 주문 받기 (줄 서있는 손님)
         // =========================
         if (!customer.HasOrdered)
         {
+            bool canOrder =
+                customer.currentState == CustomerState.WaitingInQueue &&
+                QueueManager.Instance.IsFrontCustomer(customer);
+
+            pressKeyUI.SetActive(canOrder);
+
+            if (!canOrder)
+                return;
+
             if (Input.GetKeyDown(KeyCode.E))
             {
                 OrderManager.Instance.StartOrder(customer);
                 pressKeyUI.SetActive(false);
             }
         }
-
         // =========================
         // 음료 서빙
         // =========================
         else
         {
-            if (customer.currentState != CustomerState.WaitingForDrink)
-                return;
+            bool canServe =
+                customer.currentState == CustomerState.WaitingForDrink &&
+                CupManager.Instance.GetIngredientCount() > 0;
 
-            if (CupManager.Instance.GetIngredientCount() == 0)
+            pressKeyUI.SetActive(canServe);
+
+            if (!canServe)
                 return;
 
             if (Input.GetKeyDown(KeyCode.E))
             {
                 OrderManager.Instance.CheckOrder(customer);
-          
                 pressKeyUI.SetActive(false);
             }
         }
-
     }
-   
 }
