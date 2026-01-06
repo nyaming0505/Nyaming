@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CustomerManager : MonoBehaviour
 {
@@ -54,7 +55,8 @@ public class CustomerManager : MonoBehaviour
 
     void SpawnCustomer()
     {
-        Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(newCustomer, spawnPoint.gameObject.scene);
         currentTotalCustomer++;
     }
 

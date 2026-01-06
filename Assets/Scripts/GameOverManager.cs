@@ -20,14 +20,15 @@ public class GameOverManager : MonoBehaviour
     public GameObject normalGameOverPanel;
     public GameObject trueEndingPanel;
 
-    public UIGlitchEffect glitchEffect;
+    [Header("Camera Effect")]
+    public CameraGlitchOnly cameraGlitch;
 
     [Range(0f, 1f)] public float tipChance = 0.8f;
 
     private string[] currentTips;
-
     private bool isYesSelected = true;
 
+    // 팁 데이터
     private readonly string[] defaultTips = new string[]
     {
         "미니게임도 빠른데 주문시간도 빠르네... 마우스로...",
@@ -52,10 +53,10 @@ public class GameOverManager : MonoBehaviour
     private readonly string[] bugLevel2Tips = new string[]
     {
         "System.NullReferenceException: 'Nyaming' does not exist.",
-        "데이터 손상됨. 데이터 손상됨. 데이터 손상됨.",
+        "데이터 손상됨. 데이터 손상됨.",
         "01001000 01000101 01001100 01010000",
         "하나 남았어요",
-        "ERROR MESSAGE : ERROR MESSAGE : ERROR MESSAGE : ERROR MESSAGE"
+        "ERROR MESSAGE : ERROR MESSAGE"
     };
 
     void Awake()
@@ -65,7 +66,6 @@ public class GameOverManager : MonoBehaviour
 
         Time.timeScale = 1f;
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
-
         if (tipTitle != null) defaultTipTitle = tipTitle.text;
 
         currentTips = defaultTips;
@@ -76,13 +76,15 @@ public class GameOverManager : MonoBehaviour
     {
         if (gameOverPanel.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
+                Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
             {
                 isYesSelected = !isYesSelected;
                 UpdateCursor();
             }
 
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) ||
+                Input.GetKeyDown(KeyCode.E))
             {
                 SelectOption();
             }
@@ -91,9 +93,16 @@ public class GameOverManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
-        int bugs = (EndingManager.Instance != null) ? EndingManager.Instance.bugCount : 0;
+        if (cameraGlitch == null)
+            cameraGlitch = FindObjectOfType<CameraGlitchOnly>();
 
+        if (cameraGlitch == null && Camera.main != null)
+            cameraGlitch = Camera.main.GetComponent<CameraGlitchOnly>();
+
+        int bugs = (EndingManager.Instance != null) ? EndingManager.Instance.bugCount : 0;
         Debug.Log($"[GameOver] 버그 개수: {bugs}");
+
+        if (cameraGlitch != null) cameraGlitch.SetGlitchLevel(bugs);
 
         if (bugs >= 3)
         {
@@ -101,14 +110,9 @@ public class GameOverManager : MonoBehaviour
             {
                 trueEndingPanel.SetActive(true);
                 trueEndingPanel.transform.SetAsLastSibling();
-
                 EndingSequence sequence = trueEndingPanel.GetComponent<EndingSequence>();
-                if (sequence != null)
-                {
-                    sequence.PlayEnding();
-                }
+                if (sequence != null) sequence.PlayEnding();
             }
-            if (gameOverPanel != null) gameOverPanel.SetActive(false);
             Time.timeScale = 1f;
         }
         else
@@ -117,21 +121,12 @@ public class GameOverManager : MonoBehaviour
             {
                 gameOverPanel.SetActive(true);
                 gameOverPanel.transform.SetAsLastSibling();
-
-                if (glitchEffect == null) glitchEffect = gameOverPanel.GetComponent<UIGlitchEffect>();
             }
-
             SetBugLevelData(bugs);
-
-            if (glitchEffect != null)
-            {
-                glitchEffect.SetGlitchLevel(bugs);
-            }
-
             ShowRandomTip();
+            Time.timeScale = 0f;
         }
 
-        Time.timeScale = 0f;
         isYesSelected = true;
         UpdateCursor();
     }
@@ -147,19 +142,12 @@ public class GameOverManager : MonoBehaviour
                 currentTips = bugLevel1Tips;
                 tipChance = 1f;
                 break;
-
             case 2:
                 currentTips = bugLevel2Tips;
                 tipChance = 1f;
-
-                if (tipTitle != null)
-                {
-                    tipTitle.text = "FATAL_ERROR : 0x0505";
-                    tipTitle.color = Color.red;
-                }
+                if (tipTitle != null) { tipTitle.text = "FATAL_ERROR : 0x0505"; tipTitle.color = Color.red; }
                 if (tipText != null) tipText.color = Color.red;
                 break;
-
             default:
                 currentTips = defaultTips;
                 break;
@@ -169,13 +157,11 @@ public class GameOverManager : MonoBehaviour
     void ShowRandomTip()
     {
         if (tipText == null || tipTitle == null) return;
-
         bool showTip = (Random.value <= tipChance);
 
         if (showTip && currentTips != null && currentTips.Length > 0)
         {
             int randomIndex = Random.Range(0, currentTips.Length);
-
             tipTitle.gameObject.SetActive(true);
             tipText.gameObject.SetActive(true);
             tipText.text = currentTips[randomIndex];
@@ -191,7 +177,6 @@ public class GameOverManager : MonoBehaviour
     {
         yesText.text = isYesSelected ? "> YES" : "YES";
         noText.text = isYesSelected ? "NO" : "> NO";
-
         yesText.color = isYesSelected ? Color.yellow : Color.white;
         noText.color = isYesSelected ? Color.white : Color.yellow;
     }
@@ -199,15 +184,15 @@ public class GameOverManager : MonoBehaviour
     void SelectOption()
     {
         Time.timeScale = 1f;
-
         ResetUIColors();
+
+        if (cameraGlitch != null) cameraGlitch.SetGlitchLevel(0);
 
         if (isYesSelected)
         {
-            if (EndingManager.Instance != null)
-            {
-                EndingManager.Instance.ResetBugs();
-            }
+            if (EndingManager.Instance != null) EndingManager.Instance.ResetBugs();
+
+            TitleManager.isGamePlaying = true;
             SceneManager.LoadScene("UIScene", LoadSceneMode.Single);
         }
         else
@@ -216,11 +201,11 @@ public class GameOverManager : MonoBehaviour
 
             if (TitleManager.Instance != null)
             {
-                TitleManager.Instance.ShowTitleScreen();
+                TitleManager.Instance.BackToTitle();
             }
             else
             {
-                Debug.LogWarning("TitleManager가 없어서 UI 씬을 다시 로드합니다.");
+                TitleManager.isGamePlaying = false;
                 SceneManager.LoadScene("UIScene", LoadSceneMode.Single);
             }
         }
@@ -228,11 +213,7 @@ public class GameOverManager : MonoBehaviour
 
     void ResetUIColors()
     {
-        if (tipTitle != null)
-        {
-            tipTitle.text = defaultTipTitle;
-            tipTitle.color = Color.white;
-        }
+        if (tipTitle != null) { tipTitle.text = defaultTipTitle; tipTitle.color = Color.white; }
         if (tipText != null) tipText.color = Color.white;
     }
 }

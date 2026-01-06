@@ -390,8 +390,8 @@ MonoBehaviour:
   tipTitle: {fileID: 12984404}
   tipText: {fileID: 134127741}
   normalGameOverPanel: {fileID: 1712667605}
-  trueEndingPanel: {fileID: 0}
-  glitchEffect: {fileID: 1712667609}
+  trueEndingPanel: {fileID: 365776003}
+  cameraGlitch: {fileID: 0}
   tipChance: 1
 --- !u!1 &134127739
 GameObject:
@@ -565,7 +565,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 22.572165, y: 0}
+  m_AnchoredPosition: {x: 22.676683, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &355959459
@@ -865,7 +865,7 @@ MonoBehaviour:
   gameTitleObject: {fileID: 779434533}
   pressText: {fileID: 1940718756}
   blinkSpeed: 2
-  titleGlitchEffect: {fileID: 779434537}
+  cameraGlitch: {fileID: 0}
 --- !u!1 &613817137
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,7 +1096,6 @@ GameObject:
   - component: {fileID: 779434534}
   - component: {fileID: 779434536}
   - component: {fileID: 779434535}
-  - component: {fileID: 779434537}
   m_Layer: 5
   m_Name: GameTitle
   m_TagString: Untagged
@@ -1164,24 +1163,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 779434533}
   m_CullTransparentMesh: 1
---- !u!114 &779434537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779434533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 201e0e461cea70144af0ca31112ba8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  glitchLevel: 0
-  level1Shake: 3
-  level2Shake: 7
-  level1Alpha: 0.01
-  level2Alpha: 0.02
-  shakeInterval: 0.1
 --- !u!1 &794013571
 GameObject:
   m_ObjectHideFlags: 0
@@ -2170,7 +2151,6 @@ GameObject:
   - component: {fileID: 1712667608}
   - component: {fileID: 1712667607}
   - component: {fileID: 1712667606}
-  - component: {fileID: 1712667609}
   m_Layer: 5
   m_Name: GameOverPanel
   m_TagString: Untagged
@@ -2242,24 +2222,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1712667609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1712667605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 201e0e461cea70144af0ca31112ba8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  glitchLevel: 0
-  level1Shake: 3
-  level2Shake: 7
-  level1Alpha: 0.01
-  level2Alpha: 0.02
-  shakeInterval: 0.1
 --- !u!1 &1815629791
 GameObject:
   m_ObjectHideFlags: 0
