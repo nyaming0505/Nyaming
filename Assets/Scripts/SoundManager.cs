@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    [Header("Volume")]
+    [Range(0f, 1f)] public float bgmVolume = 0.5f;
+    [Range(0f, 1f)] public float sfxVolume = 0.7f;
+
     public enum BGMType
     {
         Normal,
@@ -28,6 +32,7 @@ public class SoundManager : MonoBehaviour
     [Header("BGM Clips")]
     public AudioClip normalBGM;
     public AudioClip highLevelBGM;
+    public AudioClip creepyBGM;
     public AudioClip endingBGM;
 
     [Header("SFX Clips")]
@@ -50,10 +55,15 @@ public class SoundManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        bgmSource.volume = bgmVolume;
+        sfxSource.volume = sfxVolume;
+
+
         bgmMap = new Dictionary<BGMType, AudioClip>
         {
             { BGMType.Normal, normalBGM },
             { BGMType.HighLevel, highLevelBGM },
+            { BGMType.Creepy, creepyBGM },
             { BGMType.Ending, endingBGM }
         };
 
@@ -89,5 +99,16 @@ public class SoundManager : MonoBehaviour
         if (!sfxMap.ContainsKey(type)) return;
 
         sfxSource.PlayOneShot(sfxMap[type]);
+    }
+    public void SetBGMVolume(float value)
+    {
+        bgmVolume = value;
+        bgmSource.volume = bgmVolume;
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        sfxVolume = value;
+        sfxSource.volume = sfxVolume;
     }
 }

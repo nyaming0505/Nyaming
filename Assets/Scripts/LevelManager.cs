@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static SoundManager;
 
 public class LevelManager : MonoBehaviour
 {
@@ -12,12 +13,19 @@ public class LevelManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
+    void Start()
+    {
+        SoundManager.Instance.PlayBGM(BGMType.Normal);
+    }
 
     // =========================
     // 성공 처리
     // =========================
     public void OnCustomerServed()
     {
+        if (successCustomerCount >= 3)
+            SoundManager.Instance.PlayBGM(BGMType.HighLevel);
+
         successCustomerCount++;
         Debug.Log($"[LEVEL] 성공 손님 수: {successCustomerCount}");
     }

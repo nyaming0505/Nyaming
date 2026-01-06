@@ -2635,11 +2635,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99535a196afa80a4493f1bdffd116978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmVolume: 0.3
+  sfxVolume: 0.7
   bgmSource: {fileID: 363831722}
   sfxSource: {fileID: 613693765}
-  normalBGM: {fileID: 0}
-  highLevelBGM: {fileID: 0}
-  endingBGM: {fileID: 0}
+  normalBGM: {fileID: 8300000, guid: 8da9713ea5ff658408c5f39a56511652, type: 3}
+  highLevelBGM: {fileID: 8300000, guid: 0ad6765b23af9904ba86c10d2eccbed7, type: 3}
+  creepyBGM: {fileID: 8300000, guid: d92c6bc55f0c3814eb60b87a1dc55cba, type: 3}
+  endingBGM: {fileID: 8300000, guid: 2b83816a4aa1fbf42a8f2430b999be4b, type: 3}
   getIngredientSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
   coffeeShotSFX: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
   customerAngrySFX: {fileID: 8300000, guid: 80e397195ea2940b69ee7bdbded856a5, type: 3}
