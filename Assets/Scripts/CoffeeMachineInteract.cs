@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
+using static SoundManager;
 
 public class CoffeeMachineInteract : MonoBehaviour
 {
@@ -55,7 +56,7 @@ public class CoffeeMachineInteract : MonoBehaviour
         Debug.Log("에스프레소 완성!");
         progress = 0f;
         progressBar.fillAmount = 0f;
-        
+        SoundManager.Instance.PlaySFX(SFXType.CoffeeShot);
         CupManager.Instance.AddIngredient(CupIngredient.Espresso);
 
     }

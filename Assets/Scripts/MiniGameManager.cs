@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static SoundManager;
 
 public enum MiniGameIngredient
 {
@@ -59,6 +60,7 @@ public class MiniGameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            SoundManager.Instance.PlaySFX(SFXType.GetIngredient);
             MiniGameIngredient result = GetIngredientByAngle();
             Debug.Log("È¹µæ Àç·á: " + result);
 

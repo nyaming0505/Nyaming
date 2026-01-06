@@ -1168,56 +1168,56 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      01_Ellipsis_C: -658162250
-      02_Heart_C: -1126974537
-      03_Question_C: -1026784514
-      04_Surprised_C: 2125065046
-      05-Chaos_C: 1066423914
-      06_Circle_C: -1843575820
-      07_Music_C: 669003979
-      08_Heartbroken_C: 1074757945
-      09_Anger_C: -2075491690
-      10_Cry_C: 1149978476
-      11_Uncomfortable_C: 2043541471
-      12_Happy_C: 1080388715
-      13_Singing_C: 1548717543
-      14_Correct_C: 1245242326
-      15_Error_C: 1627992681
-      16_Prohibition_C: 199249770
-      17_Proud_C: 562389536
-      18_Bored_C: 849994966
-      19_Sad_C: -280349216
       20_Unhappy_C: -1387961760
-      21_Very angry_C: 2012675931
-      22_Sweating_C: -2015597594
-      23_Awkward_C: -1096941107
-      24_Skeleton_C: 570251601
-      25_Ellipsis_R: -587291431
-      26_Heart_R: 1308960410
-      27_Question_R: 1275548585
-      28_Surprised_R: -1827219078
-      29_Chaos_R: -2026443612
-      30_Circle_R: 1819493911
-      31_Music_R: 1526572317
-      32_Heartbroken_R: 569917418
-      33_Anger_R: 251473390
-      34_Cry_R: -2086999519
-      35_Uncomfortable_R: 1128375949
-      36_Happy_R: -90066723
-      37_Singing_R: -1811054864
-      38_Correct_R: -818218731
-      39_Error_R: 1657238352
       40_Prohibition_R: -2083860469
+      27_Question_R: 1275548585
+      30_Circle_R: 1819493911
+      34_Cry_R: -2086999519
+      14_Correct_C: 1245242326
+      11_Uncomfortable_C: 2043541471
+      39_Error_R: 1657238352
+      23_Awkward_C: -1096941107
       41_Proud_R: 1773042012
-      42_Bored_R: -1233199535
-      43_Sad_R: -1411756825
+      28_Surprised_R: -1827219078
       44_Unhappy_R: 1660512802
-      45_Very angry_R: 274355026
       46_Sweating_R: -1599689471
-      47_Awkward_R: 951036347
-      48_Skeleton_R: -1835413177
-      Heartbroken: 779342826
+      33_Anger_R: 251473390
+      29_Chaos_R: -2026443612
+      19_Sad_C: -280349216
+      08_Heartbroken_C: 1074757945
+      06_Circle_C: -1843575820
+      32_Heartbroken_R: 569917418
       Sprite_1: 556862957
+      43_Sad_R: -1411756825
+      16_Prohibition_C: 199249770
+      18_Bored_C: 849994966
+      02_Heart_C: -1126974537
+      04_Surprised_C: 2125065046
+      25_Ellipsis_R: -587291431
+      05-Chaos_C: 1066423914
+      26_Heart_R: 1308960410
+      07_Music_C: 669003979
+      Heartbroken: 779342826
+      37_Singing_R: -1811054864
+      42_Bored_R: -1233199535
+      13_Singing_C: 1548717543
+      22_Sweating_C: -2015597594
+      36_Happy_R: -90066723
+      38_Correct_R: -818218731
+      35_Uncomfortable_R: 1128375949
+      17_Proud_C: 562389536
+      45_Very angry_R: 274355026
+      10_Cry_C: 1149978476
+      47_Awkward_R: 951036347
+      12_Happy_C: 1080388715
+      31_Music_R: 1526572317
+      21_Very angry_C: 2012675931
+      24_Skeleton_C: 570251601
+      48_Skeleton_R: -1835413177
+      15_Error_C: 1627992681
+      09_Anger_C: -2075491690
+      01_Ellipsis_C: -658162250
+      03_Question_C: -1026784514
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
