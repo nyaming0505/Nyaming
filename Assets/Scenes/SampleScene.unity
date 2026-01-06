@@ -5542,7 +5542,7 @@ MonoBehaviour:
   noticeText: {fileID: 948111685}
   displayDuration: 2
   hoverCursor: {fileID: 2800000, guid: 5c305331a3c2fc34ca28b72ade05e618, type: 3}
-  hotSpot: {x: 0, y: 0}
+  hotSpot: {x: 12, y: 0}
 --- !u!1 &1097378984
 GameObject:
   m_ObjectHideFlags: 0
@@ -6617,7 +6617,7 @@ MonoBehaviour:
   noticeText: {fileID: 948111685}
   displayDuration: 2
   hoverCursor: {fileID: 2800000, guid: 5c305331a3c2fc34ca28b72ade05e618, type: 3}
-  hotSpot: {x: 0, y: 0}
+  hotSpot: {x: 12, y: 0}
 --- !u!1 &1399124606
 GameObject:
   m_ObjectHideFlags: 0
@@ -8987,7 +8987,7 @@ MonoBehaviour:
   noticeText: {fileID: 948111685}
   displayDuration: 2
   hoverCursor: {fileID: 2800000, guid: 5c305331a3c2fc34ca28b72ade05e618, type: 3}
-  hotSpot: {x: 0, y: 0}
+  hotSpot: {x: 12, y: 0}
 --- !u!1 &1902610669
 GameObject:
   m_ObjectHideFlags: 0
