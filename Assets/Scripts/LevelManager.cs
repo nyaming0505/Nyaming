@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,30 +14,76 @@ public class LevelManager : MonoBehaviour
     }
 
     // =========================
-    // ¼º°ø Ã³¸®
+    // ì„±ê³µ ì²˜ë¦¬
     // =========================
     public void OnCustomerServed()
     {
         successCustomerCount++;
-        Debug.Log($"[LEVEL] ¼º°ø ¼Õ´Ô ¼ö: {successCustomerCount}");
+        Debug.Log($"[LEVEL] ì„±ê³µ ì†ë‹˜ ìˆ˜: {successCustomerCount}");
     }
 
-    // =========================
-    // ÇöÀç ·¹º§
-    // =========================
+    /* =========================
+    // í˜„ì¬ ë ˆë²¨
     public int GetCurrentLevel()
     {
         if (successCustomerCount >= 30) return 7;
         if (successCustomerCount >= 25) return 6;
         if (successCustomerCount >= 20) return 5;
-        if (successCustomerCount >= 15) return 4;
-        if (successCustomerCount >= 10) return 3;
-        if (successCustomerCount >= 5) return 2;
+        if (successCustomerCount >= 10) return 4;
+        if (successCustomerCount >= 5) return 3;
+        if (successCustomerCount >= 3) return 2;
+        return 1;
+    }
+    =========================*/
+    public int GetCurrentLevel()
+    {
+        if (successCustomerCount >= 11) return 7;
+        if (successCustomerCount >= 9) return 6;
+        if (successCustomerCount >= 7) return 5;
+        if (successCustomerCount >= 5) return 4;
+        if (successCustomerCount >= 3) return 3;
+        if (successCustomerCount >= 1) return 2;
         return 1;
     }
 
     // =========================
-    // ÃÖ´ë µ¿½Ã ¼Õ´Ô ¼ö
+    // ğŸ”¥ ì„œë¹„ìŠ¤ ì‹œê°„ (ì¤‘ìš”)
+    // =========================
+    public float GetWaitForDrinkTime()
+    {
+        switch (GetCurrentLevel())
+        {
+            case 1: return 28f;
+            case 2: return 25f;
+            case 3: return 22f;
+            case 4: return 18f;
+            case 5: return 15f;
+            case 6: return 13f;
+            case 7: return 10f;
+            default: return 28f;
+        }
+    }
+
+    // =========================
+    // ğŸ”¥ ë¯¸ë‹ˆê²Œì„ íšŒì „ ì†ë„
+    // =========================
+    public float GetMiniGameRotateSpeed()
+    {
+        switch (GetCurrentLevel())
+        {
+            case 1: return 120f;
+            case 2: return 140f;
+            case 3: return 160f;
+            case 4: return 180f;
+            case 5: return 200f;
+            case 6: return 220f;
+            case 7: return 250f;
+            default: return 120f;
+        }
+    }
+
+    // =========================
+    // ìµœëŒ€ ë™ì‹œ ì†ë‹˜ ìˆ˜
     // =========================
     public int GetMaxTotalCustomers()
     {

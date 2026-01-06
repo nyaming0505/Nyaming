@@ -4975,6 +4975,8 @@ MonoBehaviour:
   timeLimit: 5
   noticeText: {fileID: 948111685}
   displayDuration: 2
+  hoverCursor: {fileID: 0}
+  hotSpot: {x: 0, y: 0}
 --- !u!1 &1097378984
 GameObject:
   m_ObjectHideFlags: 0
@@ -6048,6 +6050,8 @@ MonoBehaviour:
   timeLimit: 5
   noticeText: {fileID: 948111685}
   displayDuration: 2
+  hoverCursor: {fileID: 0}
+  hotSpot: {x: 0, y: 0}
 --- !u!1 &1399124606
 GameObject:
   m_ObjectHideFlags: 0
@@ -7726,7 +7730,7 @@ MonoBehaviour:
   progressBarAll: {fileID: 169338610}
   progressBar: {fileID: 1525375916}
   pressKeyUI: {fileID: 1294507514}
-  fillSpeed: 0.5
+  fillSpeed: 0.7
   tilemap: {fileID: 1647766762}
   idleTile: {fileID: 11400000, guid: 20cbba5e14b0fc744be664bc05f8ec41, type: 2}
   changedTile: {fileID: 11400000, guid: a72f05e4d90bc0c4e8099c8dde30dfbf, type: 2}
@@ -8081,7 +8085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7145c97d716d94147894731f769dab41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultOrderTime: 25
+  waitForDrinkTime: 20
   recipeDatabase: {fileID: 122215665}
   maxOrders: 4
   orderUIParent: {fileID: 2043262017}
@@ -8339,6 +8343,8 @@ MonoBehaviour:
   timeLimit: 5
   noticeText: {fileID: 948111685}
   displayDuration: 2
+  hoverCursor: {fileID: 0}
+  hotSpot: {x: 0, y: 0}
 --- !u!1 &1902610669
 GameObject:
   m_ObjectHideFlags: 0

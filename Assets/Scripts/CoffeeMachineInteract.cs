@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +9,7 @@ public class CoffeeMachineInteract : MonoBehaviour
     public GameObject progressBarAll;
     public Image progressBar;
     public GameObject pressKeyUI;
-    public float fillSpeed = 0.5f;
+    public float fillSpeed = 0.7f;
 
     public Tilemap tilemap;
     public TileBase idleTile;

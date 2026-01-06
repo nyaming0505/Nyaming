@@ -19,7 +19,7 @@ public class MiniGameManager : MonoBehaviour
 {
     [Header("Arrow Settings")]
     public Transform arrow;
-    public float rotateSpeed = 120f;
+    public float rotateSpeed;
     public float limitAngle = 60f;
 
     float currentAngle = 0f;
@@ -36,6 +36,8 @@ public class MiniGameManager : MonoBehaviour
     void OnEnable()
     {
         isPlaying = true;
+
+        rotateSpeed = LevelManager.Instance.GetMiniGameRotateSpeed();
 
         currentAngle = Random.Range(-limitAngle, limitAngle);
         direction = (Random.value > 0.5f) ? 1 : -1;
