@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static SoundManager;
 
 public static class RecipeChecker
 {
@@ -363,6 +364,7 @@ public class Customer : MonoBehaviour
 
     public void OnDrinkServed()
     {
+        SoundManager.Instance.PlaySFX(SFXType.CustomerHappy);
         bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(true);
         ChangeState(CustomerState.LeaveSuccess);
@@ -370,7 +372,7 @@ public class Customer : MonoBehaviour
 
     public void OnTimeOver()
     {
-
+        SoundManager.Instance.PlaySFX(SFXType.CustomerAngry);
         bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(false);
         ChangeState(CustomerState.LeaveFail);
