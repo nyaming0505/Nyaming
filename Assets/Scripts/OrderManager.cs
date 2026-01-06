@@ -73,9 +73,16 @@ public class OrderManager : MonoBehaviour
 
             order.remainTime -= Time.deltaTime;
 
-            // UI 타이머 갱신
+            float ratio = order.remainTime / order.maxTime;
+
+            // 주문 UI 갱신
             if (order.uiItem != null)
-                order.uiItem.UpdateTimer(order.remainTime / order.maxTime);
+                order.uiItem.UpdateTimer(ratio);
+
+            // 🔥 손님 머리 위 게이지 갱신
+            if (order.customer != null)
+                order.customer.UpdateServiceGauge(ratio);
+
 
             // ⏰ 시간 초과
             if (order.remainTime <= 0f)

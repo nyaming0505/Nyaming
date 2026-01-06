@@ -45,6 +45,10 @@ public class Customer : MonoBehaviour
 {
     public CustomerBubbleUI bubbleUI;
 
+    [Header("Queue Waiting")]
+    public float maxQueueWaitTime = 8f;
+    float currentQueueWaitTime;
+
     [Header("Movement")]
     public float moveSpeed = 2f;
 
@@ -101,6 +105,8 @@ public class Customer : MonoBehaviour
 
 
             case CustomerState.WaitingInQueue:
+                currentQueueWaitTime = maxQueueWaitTime;
+                bubbleUI.ShowWaitGauge();
                 StopMoving();
                 break;
 
@@ -119,6 +125,7 @@ public class Customer : MonoBehaviour
                 break;
 
             case CustomerState.WaitingForDrink:
+                bubbleUI.ShowWaitGauge();
                 StopMoving();
                 break;
 
@@ -164,6 +171,19 @@ public class Customer : MonoBehaviour
 
             case CustomerState.MoveToQueue:
                 ChangeState(CustomerState.WaitingInQueue);
+                break;
+
+            case CustomerState.WaitingInQueue:
+                currentQueueWaitTime -= Time.deltaTime;
+
+                float ratio = currentQueueWaitTime / maxQueueWaitTime;
+                bubbleUI.SetWaitGauge(ratio);
+
+                if (currentQueueWaitTime <= 0f)
+                {
+                    bubbleUI.HideWaitGauge();
+                    OnTimeOver();
+                }
                 break;
 
             case CustomerState.MoveToSeat:
@@ -342,12 +362,14 @@ public class Customer : MonoBehaviour
 
     public void OnDrinkServed()
     {
+        bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(true);
         ChangeState(CustomerState.LeaveSuccess);
     }
 
     public void OnTimeOver()
     {
+        bubbleUI.HideWaitGauge();
         bubbleUI.ShowResult(false);
         ChangeState(CustomerState.LeaveFail);
     }
@@ -375,6 +397,16 @@ public class Customer : MonoBehaviour
             animator.SetFloat("lastMoveX", 1);
             spriteRenderer.flipX = false;
         }
+    }
+
+    public void UpdateServiceGauge(float ratio)
+    {
+        bubbleUI.ShowWaitGauge();
+        bubbleUI.SetWaitGauge(ratio);
+    }
+    public void HideServiceGauge()
+    {
+        bubbleUI.HideWaitGauge();
     }
 
 }

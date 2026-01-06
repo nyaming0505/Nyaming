@@ -12,12 +12,42 @@ public class CustomerBubbleUI : MonoBehaviour
     public Sprite EmptySprite;
     public Sprite successSprite;
     public Sprite failSprite;
+    public Sprite angrySprite;
 
+    [Header("Queue Gauge")]
+    public GameObject waitGaugeRoot;   // 전체 게이지 오브젝트
+    public Image waitGaugeFill;        // Fill 이미지
     void Awake()
     {
         emotionIcon.sprite = silentSprite;
         orderIcon.gameObject.SetActive(false) ;
         emotionIcon.gameObject.SetActive(true);
+        waitGaugeRoot.SetActive(false);
+    }
+    public void ShowAngry()
+    {
+        orderIcon.gameObject.SetActive(false);
+        emotionIcon.sprite = angrySprite;
+        emotionIcon.gameObject.SetActive(true);
+    }
+
+    // 대기 시작
+    public void ShowWaitGauge()
+    {
+        waitGaugeRoot.SetActive(true);
+        SetWaitGauge(1f);
+    }
+
+    // 값 갱신 (0~1)
+    public void SetWaitGauge(float ratio)
+    {
+        waitGaugeFill.fillAmount = Mathf.Clamp01(ratio);
+    }
+
+    // 대기 종료
+    public void HideWaitGauge()
+    {
+        waitGaugeRoot.SetActive(false);
     }
 
     // =========================
