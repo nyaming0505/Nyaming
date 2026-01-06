@@ -31,7 +31,6 @@ public class OrderUIItem : MonoBehaviour
 
     public void UpdateTimer(float ratio)
     {
-        //Debug.Log($"[UI TIMER] ratio = {ratio}");
         timerFill.fillAmount = Mathf.Clamp01(ratio);
     }
 }

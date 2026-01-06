@@ -96,6 +96,11 @@ public class OrderManager : MonoBehaviour
     {
         Debug.Log("[ORDER] 시간 초과");
 
+        if (HeartManager.instance != null)
+        {
+            HeartManager.instance.OnOrderFailed();
+        }
+
         order.customer.OnTimeOver();
 
         if (order.uiItem != null)
@@ -194,6 +199,7 @@ public class OrderManager : MonoBehaviour
         else
         {
             Debug.Log("[ORDER] 실패");
+            HeartManager.instance.OnOrderFailed();
             targetCustomer.OnTimeOver();
         }
 
