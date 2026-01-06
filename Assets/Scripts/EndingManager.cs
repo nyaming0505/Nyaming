@@ -6,8 +6,6 @@ public class EndingManager : MonoBehaviour
 
     public int bugCount = 0;
 
-    public EndingSequence endingSequence;
-
     void Awake()
     {
         if (Instance == null)
@@ -22,23 +20,10 @@ public class EndingManager : MonoBehaviour
         }
     }
 
-    // 버그를 찾았을 때 호출
     public void AddBugCount()
     {
         bugCount++;
         Debug.Log("현재 버그 카운트: " + bugCount);
-    }
-
-    public void TriggerTrueEnding()
-    {
-        if (endingSequence != null)
-        {
-            endingSequence.PlayEnding();
-        }
-        else
-        {
-            Debug.LogError("EndingManager에 EndingSequence가 연결되지 않았습니다!");
-        }
     }
 
     public void ResetBugs()

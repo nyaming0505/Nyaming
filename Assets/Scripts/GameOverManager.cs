@@ -11,14 +11,13 @@ public class GameOverManager : MonoBehaviour
     public Text yesText;
     public Text noText;
 
+    [Header("진엔딩 UI")]
+    public GameObject trueEndingPanel;
+
     [Header("팁 시스템 설정")]
     public Text tipTitle;
     public Text tipText;
     private string defaultTipTitle = "TIP";
-
-    [Header("진엔딩 UI")]
-    public GameObject normalGameOverPanel;
-    public GameObject trueEndingPanel;
 
     [Header("Camera Effect")]
     public CameraGlitchOnly cameraGlitch;
@@ -28,7 +27,6 @@ public class GameOverManager : MonoBehaviour
     private string[] currentTips;
     private bool isYesSelected = true;
 
-    // 팁 데이터
     private readonly string[] defaultTips = new string[]
     {
         "미니게임도 빠른데 주문시간도 빠르네... 마우스로...",
@@ -56,7 +54,7 @@ public class GameOverManager : MonoBehaviour
         "데이터 손상됨. 데이터 손상됨.",
         "01001000 01000101 01001100 01010000",
         "하나 남았어요",
-        "ERROR MESSAGE : ERROR MESSAGE"
+        "ERROR MESSAGE : ERROR MESSAGE : ERROR MESSAGE : ERROR MESSAGE"
     };
 
     void Awake()
@@ -65,7 +63,10 @@ public class GameOverManager : MonoBehaviour
         else Destroy(gameObject);
 
         Time.timeScale = 1f;
+
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (trueEndingPanel != null) trueEndingPanel.SetActive(false);
+
         if (tipTitle != null) defaultTipTitle = tipTitle.text;
 
         currentTips = defaultTips;
@@ -74,7 +75,7 @@ public class GameOverManager : MonoBehaviour
 
     void Update()
     {
-        if (gameOverPanel.activeSelf)
+        if (gameOverPanel != null && gameOverPanel.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
                 Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
@@ -95,14 +96,11 @@ public class GameOverManager : MonoBehaviour
     {
         if (cameraGlitch == null)
             cameraGlitch = FindObjectOfType<CameraGlitchOnly>();
-
         if (cameraGlitch == null && Camera.main != null)
             cameraGlitch = Camera.main.GetComponent<CameraGlitchOnly>();
 
         int bugs = (EndingManager.Instance != null) ? EndingManager.Instance.bugCount : 0;
         Debug.Log($"[GameOver] 버그 개수: {bugs}");
-
-        if (cameraGlitch != null) cameraGlitch.SetGlitchLevel(bugs);
 
         if (bugs >= 3)
         {
@@ -110,10 +108,17 @@ public class GameOverManager : MonoBehaviour
             {
                 trueEndingPanel.SetActive(true);
                 trueEndingPanel.transform.SetAsLastSibling();
+
                 EndingSequence sequence = trueEndingPanel.GetComponent<EndingSequence>();
-                if (sequence != null) sequence.PlayEnding();
+                if (sequence != null)
+                {
+                    sequence.PlayEnding();
+                }
+                else
+                {
+                    Debug.LogError("TrueEndingPanel에 'EndingSequence' 스크립트가 없습니다!");
+                }
             }
-            Time.timeScale = 1f;
         }
         else
         {
@@ -122,10 +127,14 @@ public class GameOverManager : MonoBehaviour
                 gameOverPanel.SetActive(true);
                 gameOverPanel.transform.SetAsLastSibling();
             }
+
             SetBugLevelData(bugs);
             ShowRandomTip();
-            Time.timeScale = 0f;
+
+            if (cameraGlitch != null) cameraGlitch.SetGlitchLevel(bugs);
         }
+
+        Time.timeScale = 0f;
 
         isYesSelected = true;
         UpdateCursor();
@@ -175,6 +184,8 @@ public class GameOverManager : MonoBehaviour
 
     void UpdateCursor()
     {
+        if (yesText == null || noText == null) return;
+
         yesText.text = isYesSelected ? "> YES" : "YES";
         noText.text = isYesSelected ? "NO" : "> NO";
         yesText.color = isYesSelected ? Color.yellow : Color.white;
@@ -184,7 +195,6 @@ public class GameOverManager : MonoBehaviour
     void SelectOption()
     {
         Time.timeScale = 1f;
-        ResetUIColors();
 
         if (cameraGlitch != null) cameraGlitch.SetGlitchLevel(0);
 
