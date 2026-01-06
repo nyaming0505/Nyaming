@@ -15,7 +15,10 @@ public class CustomerInteract : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        pressKeyUI.SetActive(true);
+        if (QueueManager.Instance.IsFrontCustomer(customer))
+        {
+            pressKeyUI.SetActive(true);
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -27,6 +30,13 @@ public class CustomerInteract : MonoBehaviour
     void Update()
     {
 
+        if (pressKeyUI.activeSelf &&
+             !QueueManager.Instance.IsFrontCustomer(customer))
+        {
+            pressKeyUI.SetActive(false);
+            return;
+        }
+
         if (!pressKeyUI.activeSelf)
             return;
 
@@ -35,9 +45,6 @@ public class CustomerInteract : MonoBehaviour
         // =========================
         if (!customer.HasOrdered)
         {
-            if (!QueueManager.Instance.IsFrontCustomer(customer))
-                return;
-
             if (Input.GetKeyDown(KeyCode.E))
             {
                 OrderManager.Instance.StartOrder(customer);
@@ -58,7 +65,6 @@ public class CustomerInteract : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("??");
                 OrderManager.Instance.CheckOrder(customer);
           
                 pressKeyUI.SetActive(false);
