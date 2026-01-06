@@ -21,7 +21,8 @@ public class SoundManager : MonoBehaviour
         GetIngredient,
         CoffeeShot,
         CustomerAngry,
-        CustomerHappy
+        CustomerHappy,
+        Error
     }
     public static SoundManager Instance;
 
@@ -40,6 +41,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip coffeeShotSFX;
     public AudioClip customerAngrySFX;
     public AudioClip customerHappySFX;
+    public AudioClip ErrorSFX;
 
     Dictionary<BGMType, AudioClip> bgmMap;
     Dictionary<SFXType, AudioClip> sfxMap;
@@ -72,7 +74,8 @@ public class SoundManager : MonoBehaviour
             { SFXType.GetIngredient, getIngredientSFX },
             { SFXType.CoffeeShot, coffeeShotSFX },
             { SFXType.CustomerAngry, customerAngrySFX },
-            { SFXType.CustomerHappy, customerHappySFX }
+            { SFXType.CustomerHappy, customerHappySFX },
+            { SFXType.Error, ErrorSFX }
         };
     }
 
