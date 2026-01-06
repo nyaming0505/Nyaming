@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using static SoundManager;
 
 public class BugTrigger : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class BugTrigger : MonoBehaviour
     public float timeLimit = 5.0f;
 
     [Header("UI 알림 설정")]
+    public GameObject bugUI;
     public Text noticeText;
     public float displayDuration = 2.0f;
 
@@ -34,7 +36,11 @@ public class BugTrigger : MonoBehaviour
     void OnEnable()
     {
         ResetBug();
-        if (noticeText != null) noticeText.gameObject.SetActive(false);
+        if (noticeText != null)
+        {
+            bugUI.SetActive(false);
+            noticeText.gameObject.SetActive(false);
+        }
     }
 
     // 오브젝트가 비활성화되면 커서를 원래대로 되돌림 (안전장치)
@@ -103,6 +109,7 @@ public class BugTrigger : MonoBehaviour
     void ActivateBug()
     {
         bugActivated = true;
+        SoundManager.Instance.PlaySFX(SFXType.Error);
 
         if (EndingManager.Instance != null)
         {
@@ -122,7 +129,7 @@ public class BugTrigger : MonoBehaviour
         {
             case BugType.ScoreDouble:
                 noticeText.text = "SYSTEM ERROR : 점수 2배";
-                noticeText.color = Color.yellow;
+                noticeText.color = Color.red;
                 if (ScoreManager.Instance != null)
                     ScoreManager.Instance.ActivateDoubleScoreBug();
                 break;
@@ -136,7 +143,7 @@ public class BugTrigger : MonoBehaviour
 
             case BugType.TimeDouble:
                 noticeText.text = "SYSTEM ERROR : 시간 2배";
-                noticeText.color = new Color(0.7f, 0.2f, 1.0f);
+                noticeText.color = Color.red;
                 if (OrderManager.Instance != null)
                     OrderManager.Instance.ActivateDoubleTimeBug();
                 break;
@@ -145,10 +152,12 @@ public class BugTrigger : MonoBehaviour
 
     IEnumerator ShowNoticeRoutine()
     {
+        bugUI.SetActive(true);
         noticeText.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(displayDuration);
 
+        bugUI.SetActive(false);
         noticeText.gameObject.SetActive(false);
     }
 }
