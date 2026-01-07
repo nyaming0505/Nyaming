@@ -5536,7 +5536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bugType: 0
   requiredClicks: 10
-  useTimeLimit: 0
+  useTimeLimit: 1
   timeLimit: 5
   bugUI: {fileID: 2143312233}
   noticeText: {fileID: 948111685}
@@ -6611,7 +6611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bugType: 1
   requiredClicks: 10
-  useTimeLimit: 0
+  useTimeLimit: 1
   timeLimit: 5
   bugUI: {fileID: 2143312233}
   noticeText: {fileID: 948111685}
@@ -8981,7 +8981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bugType: 2
   requiredClicks: 10
-  useTimeLimit: 0
+  useTimeLimit: 1
   timeLimit: 5
   bugUI: {fileID: 2143312233}
   noticeText: {fileID: 948111685}
