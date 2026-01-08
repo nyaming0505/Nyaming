@@ -22,6 +22,9 @@ public class GameOverManager : MonoBehaviour
     [Header("Camera Effect")]
     public CameraGlitchOnly cameraGlitch;
 
+    [Header("최고점수 표시용")]
+    public Text highScoreText;
+
     [Range(0f, 1f)] public float tipChance = 0.8f;
 
     private string[] currentTips;
@@ -100,7 +103,20 @@ public class GameOverManager : MonoBehaviour
             cameraGlitch = Camera.main.GetComponent<CameraGlitchOnly>();
 
         int bugs = (EndingManager.Instance != null) ? EndingManager.Instance.bugCount : 0;
-        Debug.Log($"[GameOver] 버그 개수: {bugs}");
+
+        if (ScoreManager.Instance != null && highScoreText != null)
+        {
+            if (bugs == 0)
+            {
+                int currentScore = ScoreManager.Instance.currentScore;
+                if (currentScore > ScoreManager.sessionHighScore)
+                {
+                    ScoreManager.sessionHighScore = currentScore;
+                }
+            }
+            highScoreText.text = "최고 점수 : " + ScoreManager.sessionHighScore.ToString();
+            highScoreText.color = Color.white;
+        }
 
         if (bugs >= 3)
         {
@@ -113,10 +129,6 @@ public class GameOverManager : MonoBehaviour
                 if (sequence != null)
                 {
                     sequence.PlayEnding();
-                }
-                else
-                {
-                    Debug.LogError("TrueEndingPanel에 'EndingSequence' 스크립트가 없습니다!");
                 }
             }
         }

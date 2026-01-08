@@ -53,7 +53,6 @@ public class CoffeeMachineInteract : MonoBehaviour
 
     void CompleteCoffee()
     {
-        Debug.Log("에스프레소 완성!");
         progress = 0f;
         progressBar.fillAmount = 0f;
         SoundManager.Instance.PlaySFX(SFXType.CoffeeShot);

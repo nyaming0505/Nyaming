@@ -49,7 +49,6 @@ public class CupManager : MonoBehaviour
     {
         if (cupData.ingredients.Count >= cupData.maxCount)
         {
-            Debug.Log("ÄÅÀÌ °¡µæ Âü!");
             return false;
         }
 

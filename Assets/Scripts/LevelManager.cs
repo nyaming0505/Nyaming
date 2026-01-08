@@ -27,7 +27,6 @@ public class LevelManager : MonoBehaviour
             SoundManager.Instance.PlayBGM(BGMType.HighLevel);
 
         successCustomerCount++;
-        Debug.Log($"[LEVEL] 성공 손님 수: {successCustomerCount}");
     }
 
     /* =========================

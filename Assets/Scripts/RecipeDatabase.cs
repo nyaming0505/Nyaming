@@ -147,14 +147,11 @@ public class RecipeDatabase : MonoBehaviour
 
         if (recipe == null)
         {
-            Debug.LogWarning("? 레시피가 비어있습니다.");
             return;
         }
 
         string ingredientList = "";
         foreach (var ing in recipe.ingredients)
             ingredientList += ing + " ";
-
-        Debug.Log($" 랜덤 레시피: {recipe.recipeName} / 재료: {ingredientList}");
     }
 }

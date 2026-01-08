@@ -96,12 +96,10 @@ public class BugTrigger : MonoBehaviour
             {
                 currentClicks = 0;
                 firstClickTime = Time.time;
-                Debug.Log("시간 초과! 클릭 횟수 초기화");
             }
         }
 
         currentClicks++;
-        Debug.Log($"{gameObject.name} 클릭됨: {currentClicks}/{requiredClicks}");
 
         if (currentClicks >= requiredClicks)
         {

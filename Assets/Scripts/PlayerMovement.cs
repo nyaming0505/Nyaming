@@ -69,6 +69,5 @@ public class PlayerMovement : MonoBehaviour
     public void ActivateSpeedBug()
     {
         speed *= 2f;
-        Debug.Log(" 버그 발동! 이동속도 2배 적용됨");
     }
 }

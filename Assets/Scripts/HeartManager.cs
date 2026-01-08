@@ -61,16 +61,11 @@ public class HeartManager : MonoBehaviour
         {
             GameOverManager.Instance.TriggerGameOver();
         }
-        else
-        {
-            Debug.LogError("GameOverManager 인스턴스를 찾을 수 없습니다!");
-        }
     }
 
     public void ResetHearts()
     {
         currentHearts = maxHearts;
         UpdateHeartUI();
-        Debug.Log("하트 리셋 완료! 현재 하트: " + currentHearts);
     }
 }

@@ -123,7 +123,5 @@ public class UIGlitchEffect : MonoBehaviour
                 currentAlphaNoise = level2Alpha;
                 break;
         }
-
-        Debug.Log($"글리치 효과 설정됨: Level {level}, 강도 {currentShake}");
     }
 }

@@ -23,7 +23,6 @@ public class EndingManager : MonoBehaviour
     public void AddBugCount()
     {
         bugCount++;
-        Debug.Log("현재 버그 카운트: " + bugCount);
     }
 
     public void ResetBugs()

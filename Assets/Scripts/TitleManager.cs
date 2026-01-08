@@ -143,7 +143,6 @@ public class TitleManager : MonoBehaviour
         {
             int bugs = EndingManager.Instance.bugCount;
             if (bugs >= 2 && pressText != null) pressText.color = Color.red;
-            Debug.Log($"타이틀 복귀! 버그 개수: {bugs}");
         }
 
         inputCooldown = 0.5f;

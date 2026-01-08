@@ -94,8 +94,6 @@ public class OrderManager : MonoBehaviour
 
     void HandleOrderTimeOver(OrderData order)
     {
-        Debug.Log("[ORDER] 시간 초과");
-
         order.customer.OnTimeOver();
 
         if (order.uiItem != null)
@@ -116,26 +114,21 @@ public class OrderManager : MonoBehaviour
 
         if (customer.HasOrdered)
         {
-            Debug.Log("이미 주문한 손님입니다.");
             return;
         }
 
         if (activeOrders.Count >= maxOrders)
         {
-            Debug.Log("최대 주문 수 도달");
             return;
         }
 
         Chair chair = ChairManager.Instance.GetEmptyChair();
         if (chair == null)
         {
-            Debug.Log("의자가 없어서 주문을 받을 수 없습니다!");
             return;
         }
 
         Recipe recipe = recipeDatabase.GetRandomRecipe();
-
-        Debug.Log($"[ORDER] 추가됨: {recipe.recipeName} / 현재 주문 수: {activeOrders.Count}");
         chair.TryOccupy();
         customer.MarkOrdered();
         customer.OnOrderTaken(chair, recipe);
@@ -144,7 +137,6 @@ public class OrderManager : MonoBehaviour
         //오더UI 생성
         if (!prefabMap.TryGetValue(recipe.recipeType, out var prefab))
         {
-            Debug.LogError($"프리팹 없음: {recipe.recipeType}");
             return;
         }
 
@@ -179,7 +171,6 @@ public class OrderManager : MonoBehaviour
 
         if (order == null)
         {
-            Debug.Log("해당 손님의 주문이 없습니다.");
             return;
         }
         bool success = RecipeChecker.Check(
@@ -188,7 +179,6 @@ public class OrderManager : MonoBehaviour
     );
         if (success)
         {
-            Debug.Log("[ORDER] 성공");
             targetCustomer.OnDrinkServed();
             ScoreManager.Instance.AddScore(order.recipe.score);
 
@@ -196,7 +186,6 @@ public class OrderManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("[ORDER] 실패");
             targetCustomer.OnTimeOver();
         }
 
@@ -226,7 +215,5 @@ public class OrderManager : MonoBehaviour
             order.remainTime *= 2f;
             order.maxTime *= 2f;
         }
-
-        Debug.Log(" 버그 발동! 서비스 타임 2배 적용됨");
     }
 }
