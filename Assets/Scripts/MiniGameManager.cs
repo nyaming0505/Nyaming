@@ -65,7 +65,6 @@ public class MiniGameManager : MonoBehaviour
         {
             SoundManager.Instance.PlaySFX(SFXType.GetIngredient);
             MiniGameIngredient result = GetIngredientByAngle();
-            Debug.Log("È¹µæ Àç·á: " + result);
 
             CupIngredient cupIngredient = ConvertToCupIngredient(result);
             CupManager.Instance.AddIngredient(cupIngredient);

@@ -41,7 +41,6 @@ public class EndingSequence : MonoBehaviour
 
     public void PlayEnding()
     {
-        Debug.Log("🎬 [EndingSequence] 진엔딩 시퀀스 시작!");
         if (endingUIRoot != null)
         {
             endingUIRoot.SetActive(true);
@@ -97,12 +96,10 @@ public class EndingSequence : MonoBehaviour
                 finalText.text += letter;
                 yield return new WaitForSecondsRealtime(0.05f);
             }
-            Debug.Log("3️⃣ 로그 출력 완료");
         }
 
         yield return new WaitForSecondsRealtime(3.0f);
 
-        Debug.Log("4️⃣ 동영상 재생 시도");
         if (finalText != null) finalText.gameObject.SetActive(false);
 
         if (videoPlayer != null)
