@@ -40,7 +40,7 @@ public class GameOverManager : MonoBehaviour
         "냐밍을 쓰다듬어주면 무언가 일어난다는 소문이...",
         "냐밍은 가끔 당신을 쳐다보고 있어요.",
         "냐밍은 고양이를 좋아한다.",
-        "고양이는 완벽한 생물이다."
+        "급할 때는 재료선반을 클릭하면 돼요!"
     };
 
     private readonly string[] bugLevel1Tips = new string[]
