@@ -104,6 +104,7 @@ public class EndingSequence : MonoBehaviour
 
         if (videoPlayer != null)
         {
+            videoPlayer.transform.SetAsLastSibling();
             videoPlayer.gameObject.SetActive(true);
             videoPlayer.Play();
         }
