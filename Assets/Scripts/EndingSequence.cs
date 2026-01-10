@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Collections;
+using static SoundManager;
 
 public class EndingSequence : MonoBehaviour
 {
@@ -43,6 +44,8 @@ public class EndingSequence : MonoBehaviour
     {
         if (endingUIRoot != null)
         {
+            SoundManager.Instance.PlayBGM(BGMType.Ending);
+
             endingUIRoot.SetActive(true);
 
             Canvas canvas = endingUIRoot.GetComponent<Canvas>();
