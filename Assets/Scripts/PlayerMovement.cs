@@ -27,9 +27,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // 🔹 1) 입력 받기
+        // 🔹 1) 기본 Axis 입력 (방향키 / WASD)
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
+
+        // 🔹 1-1) 한글 자판 ㅈㅁㄴㅇ 대응 (물리 키 기준)
+        if (Input.GetKey(KeyCode.A)) x = -1f; // ㅁ
+        if (Input.GetKey(KeyCode.D)) x = 1f;  // ㅇ
+        if (Input.GetKey(KeyCode.W)) y = 1f;  // ㅈ
+        if (Input.GetKey(KeyCode.S)) y = -1f; // ㄴ
 
         // 🔹 2) 대각선 이동 금지
         if (x != 0f) y = 0f;
@@ -37,15 +43,15 @@ public class PlayerMovement : MonoBehaviour
 
         input = new Vector2(x, y);
 
-        // 🔹 3) 걷고 있는지 판단 (threshold 사용)
+        // 🔹 3) 걷고 있는지 판단
         bool isWalking = input.sqrMagnitude > (inputThreshold * inputThreshold);
         anim.SetBool("isWalking", isWalking);
 
-        // 🔹 4) 실시간 이동값 전달 (Walk Sub State Machine에서 사용)
+        // 🔹 4) 이동 방향 전달
         anim.SetFloat("moveX", input.x);
         anim.SetFloat("moveY", input.y);
 
-        // 🔹 5) 마지막 이동 방향 기록 (Idle 방향 결정)
+        // 🔹 5) 마지막 이동 방향 기록
         if (isWalking)
         {
             lastMove = input.normalized;
@@ -53,12 +59,13 @@ public class PlayerMovement : MonoBehaviour
             anim.SetFloat("lastMoveY", lastMove.y);
         }
 
-        // 🔹 6) 좌우 반전 처리 (스프라이트 방향)
+        // 🔹 6) 좌우 반전
         if (input.x != 0)
             sr.flipX = input.x < 0;
         else
             sr.flipX = lastMove.x < 0;
     }
+
 
     void FixedUpdate()
     {
